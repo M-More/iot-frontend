@@ -1,32 +1,49 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <el-container>
+    <el-header>
+      <Header></Header>
+    </el-header>
+    <el-container class="body">
+      <LeftMenu></LeftMenu>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
+<script type="text/ecmascript-6">
+import LeftMenu from './components/LeftMenu.vue'
+import Header from './components/Header.vue'
+export default {
+  data() {
+    return {
+      show: true
+    }
+  },
+  components: {LeftMenu, Header}
+}
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+*{
+  padding: 0;
+  margin: 0;
+}
+.el-header{
+  background-color: #262f40;
   text-align: center;
-  color: #2c3e50;
+  line-height: 60px;
 }
 
-#nav {
-  padding: 30px;
+.el-main {
+  background-color: whitesmoke;
+  color: black;
+  text-align: center;
+  line-height: 160px;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+.body{
+  height: 800px;
 }
 </style>
