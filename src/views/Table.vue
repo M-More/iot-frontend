@@ -15,7 +15,7 @@
     </div>
 
     <div class="smallTable">
-      <el-table
+      <el-table class="log-table"
           :data="tableData.filter(data => !search || data.IP.toLowerCase().includes(search.toLowerCase())|| data.port.toLowerCase().includes(search.toLowerCase())|| data.IP.toLowerCase().includes(search.toLowerCase())|| data.action.toLowerCase().includes(search.toLowerCase())|| data.mes.toLowerCase().includes(search.toLowerCase())|| data.level.toLowerCase().includes(search.toLowerCase())|| data.type.toLowerCase().includes(search.toLowerCase()))"
           style="
           background-color: transparent"
@@ -400,36 +400,36 @@ template{
 }
 
 /* 表格内背景颜色 */
-.el-table th {
+.tableTable .el-table th {
   background-color: #123146 !important;
   color: #00fdee;
 }
-.el-table tr {
-  background-color: transparent !important;
+.tableTable .el-table tr {
+  background-color: transparent;
   color: white;
 }
 
-.el-table td {
-  align-items: center !important;
+.tableTable .el-table td {
+  align-items: center;
 }
 
-.el-table--enable-row-hover .el-table__body tr:hover>td{
+.tableTable .el-table--enable-row-hover .el-table__body tr:hover>td{
   background-color: #123146 !important;
 }
 
-.el-table__body tr,
-.el-table__body td {
-  padding: 0 !important;
-  height: 40px !important;
+.tableTable .el-table__body tr,
+.tableTable .el-table__body td {
+  padding: 0;
+  height: 40px;
 }
 
-.el-table td,
-.el-table th.is-leaf {
-  border-bottom: 1px dashed #095273 !important;
+.tableTable .el-table td,
+.tableTable .el-table th.is-leaf {
+  border-bottom: 1px dashed #095273;
 }
 
-.el-table::before {
-  height: 0px !important;
+.tableTable .el-table::before {
+  height: 0;
 }
 
 .searchClass input.el-input__inner{
@@ -461,33 +461,36 @@ template{
 
 /*dialog样式*/
 
-.dialog{
-  box-shadow: none !important;
-  background-color: rgba(0,0,0,0) !important;
+.tableTable .dialog{
+  box-shadow: none;
+  background-color: rgba(0,0,0,0);
 }
-.dialog_close{
+.tableTable .dialog_close{
   margin: -50px;
   padding: 0;
   width: 30px;
   height: 30px;
-  background-color: rgba(1,1,1,0) !important;
-  box-shadow: none !important;
-  border: none !important;
+  background-color: rgba(1,1,1,0);
+  box-shadow: none;
+  border: none;
   z-index: 2;
   position: absolute;
   top: 5px;
   right: 5px;
 }
-.el-dialog__header{
+
+.tableTable .el-dialog__header{
   display: none;
 }
-.el-dialog__body{
+
+.tableTable .el-dialog__body{
   background: url("../assets/带装饰.png") no-repeat;
-  padding-bottom: 10px !important;
-  padding-left: 3px !important;
-  padding-right: 3px !important;
+  padding-bottom: 10px;
+  padding-left: 3px;
+  padding-right: 3px;
   margin: 0;
 }
+
 .title1{
   color: white;
   font-size: 20px;

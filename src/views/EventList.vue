@@ -1,5 +1,5 @@
 <template>
-  <div class="tableTable">
+  <div class="eventTable">
     <div class="image-box">
       <img class="image" src="../assets/journal.png">
       <div class="title-box">
@@ -225,7 +225,7 @@ template{
   background-color: #408ae5;
 }
 
-.tableTable{
+.eventTable{
   background: url("../assets/background.png") no-repeat center center;
   width: 906px;
   height: 279px;
@@ -272,36 +272,36 @@ template{
 }
 
 /* 表格内背景颜色 */
-.el-table th {
+.eventTable .el-table th {
   background-color: #123146 !important;
   color: #00fdee;
 }
-.el-table tr {
-  background-color: transparent !important;
+.eventTable .el-table tr {
+  background-color: transparent;
   color: white;
 }
 
-.el-table td {
-  align-items: center !important;
+.eventTable .el-table td {
+  align-items: center;
 }
 
-.el-table--enable-row-hover .el-table__body tr:hover>td{
+.eventTable .el-table--enable-row-hover .el-table__body tr:hover>td{
   background-color: #123146 !important;
 }
 
-.el-table__body tr,
-.el-table__body td {
-  padding: 0 !important;
-  height: 40px !important;
+.eventTable  .el-table__body tr,
+.eventTable  .el-table__body td {
+  padding: 0;
+  height: 40px;
 }
 
-.el-table td,
-.el-table th.is-leaf {
-  border-bottom: 1px dashed #095273 !important;
+.eventTable  .el-table td,
+.eventTable  .el-table th.is-leaf {
+  border-bottom: 1px dashed #095273;
 }
 
-.el-table::before {
-  height: 0px !important;
+.eventTable .el-table::before {
+  height: 0;
 }
 
 .searchClass input.el-input__inner{
@@ -344,22 +344,22 @@ div.tabClass div{
   width: 100%;
 }
 /*标签页字体颜色*/
-.el-tabs__item {
+.eventTable .el-tabs__item {
   color: #01f9ee !important;
   font-size: 14px !important;
   border-bottom-color: #389fe3 !important;
 }
 /*标签页宽高，背景*/
-.el-tabs__nav {
+.eventTable .el-tabs__nav {
   min-width: 70px !important;
   display: flex;
 }
-.el-tabs__nav >*
+.eventTable .el-tabs__nav >*
 {
   flex: 1;
 }
 /*标签页选中：字体颜色，边框改变*/
-.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
+.eventTable .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
   color: #f27b02 !important;
   border-left-color: #389fe3 !important;
   border-right-color: #389fe3 !important;
@@ -368,7 +368,7 @@ div.tabClass div{
 }
 
 /*内容页样式*/
-.el-tabs__content {
+.eventTable .el-tabs__content {
   /*height: 441px;*/
   width: 343px;
   color: #ffffff;
@@ -395,7 +395,7 @@ div.tabClass div{
 </style>
 
 <style>
-.close-but{
+.eventTable .close-but{
   /*height: 30px !important;*/
   width: 10px !important;
   position: absolute;
@@ -415,9 +415,7 @@ div.tabClass div{
   .event-dia .el-dialog{
     background: rgba(200,200,100,0) !important;
   }
-/*.event-dia .el-dialog__header  {*/
-/*  display: none;*/
-/*}*/
+
 .event-dia .el-dialog__body  {
   background: url("../assets/event-dia-back1.png") no-repeat;
   height:510px;
@@ -426,11 +424,13 @@ div.tabClass div{
   overflow-y: auto;
   position:relative;
 }
-.event-dia .el-dialog__footer{
+
+.event-dia .el-dialog__header{
   display: none;
 }
+
 /*关闭按钮样式*/
-.el-dialog__headerbtn i {
+.eventTable .el-dialog__headerbtn i {
   content: '修改下面的font-size可以改变图片的大小';
   font-size: 25px;
   color: #00f8ed !important;

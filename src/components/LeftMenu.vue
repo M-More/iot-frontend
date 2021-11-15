@@ -63,6 +63,7 @@ export default {
   .el-menu {
     width: 230px;
     border-right: 0 !important;
+    height: 100%;
   }
   li{
     tab-index: 0;

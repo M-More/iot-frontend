@@ -1,13 +1,18 @@
 <template>
-  <el-container>
-    <el-header>
-      <Header></Header>
-    </el-header>
-    <el-container class="body">
+  <el-container class="body">
+    <el-aside width="230px">
       <LeftMenu></LeftMenu>
+    </el-aside>
+    <el-container>
+      <el-header>
+        <Header></Header>
+      </el-header>
       <el-main>
         <router-view></router-view>
       </el-main>
+      <el-footer>
+        <Footer></Footer>
+      </el-footer>
     </el-container>
   </el-container>
 </template>
@@ -15,13 +20,14 @@
 <script type="text/ecmascript-6">
 import LeftMenu from './components/LeftMenu.vue'
 import Header from './components/Header.vue'
+import Footer from './components/Footer.vue'
 export default {
   data() {
     return {
       show: true
     }
   },
-  components: {LeftMenu, Header}
+  components: {LeftMenu, Header, Footer}
 }
 </script>
 
@@ -30,10 +36,11 @@ export default {
   padding: 0;
   margin: 0;
 }
-.el-header{
-  background-color: #262f40;
-  text-align: center;
+
+.el-header, .el-footer {
+  background-color: white;
   line-height: 60px;
+  color: black;
 }
 
 .el-main {
