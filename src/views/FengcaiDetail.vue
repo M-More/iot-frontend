@@ -55,7 +55,7 @@
         ></el-input>
       </el-form-item>
       <el-row class="deleteAndDown">
-        <el-button type="success" @click="del()">发布</el-button>
+        <el-button size="mini" type="success" @click="del()">发布</el-button>
         <el-dialog
             title="提示"
             :visible.sync="delVisible"
@@ -69,7 +69,7 @@
           </span>
         </el-dialog>
 
-        <el-button type="warning"  @click="dialogVisible=true">驳回</el-button>
+        <el-button size="mini" type="warning"  @click="dialogVisible=true">驳回</el-button>
         <el-dialog
             title="审核驳回"
             :visible.sync="dialogVisible"
@@ -93,7 +93,7 @@
             <el-button @click="cancel">关 闭</el-button>
       </span>
         </el-dialog>
-        <el-button>返回</el-button>
+        <el-button size="mini" @click="back">返回</el-button>
       </el-row>
     </el-form>
   </div>
@@ -140,6 +140,9 @@ export default {
     },
     del(){
       this.delVisible = true;
+    },
+    back(){
+      this.$router.replace('/fengcaitable')
     }
   }
 }
@@ -155,6 +158,10 @@ export default {
 }
 .detailed-page .el-form-item__label {
   font-weight: bolder;
+}
+
+.detailed-page .el-button{
+  margin: 10px;
 }
 
 .forms{

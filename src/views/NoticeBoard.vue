@@ -1,43 +1,41 @@
 <template xmlns:el-con="http://www.w3.org/1999/html">
   <!--  顶部-->
   <el-card class="box-card">
-
-    <div slot="header">
-      <el-row>
-        <el-col :span="8" >
-          <p>新增/修改</p>
-        </el-col>
-      </el-row>
+    <div slot="header" class="abc">
+      <div class="new">新增/修改</div>
     </div>
     <!--  表格-->
     <!--    inline="true"-->
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="top"  class="ruleForm"  >
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left"  class="ruleForm"  >
 
       <el-row>
         <el-col :span="8" >
-          <el-form-item label="标题1"   prop="name1"  class="inform-title">
-            <el-input placeholder="0-25个字符" v-model="ruleForm.name1"></el-input>
+          <el-form-item label="标题1"   prop="name1" >
+            <el-input placeholder="1-25个字符" v-model="ruleForm.name1"></el-input>
           </el-form-item>
         </el-col>
 
         <el-col :span="8" >
-        <el-form-item label="发布时间1"   required>
+          <el-form-item label="发布时间1" prop="date1"  required>
             <el-form-item prop="date1">
               <el-date-picker type="date"  placeholder="选择日期" v-model="ruleForm.date1"></el-date-picker>
             </el-form-item>
           </el-form-item>
         </el-col>
         <el-col :span="4" >
-
-        <el-form-item label="状态" >
-          --
+          <el-form-item label="状态" >
+            <br>
+            <div style="text-align: left">--</div>
           </el-form-item>
         </el-col>
 
         <el-col :span="4" >
           <el-form-item label="操作">
-            <el-button type="success" @click="submitForm1('ruleForm')">保存</el-button>
-            <!--        <el-button @click="resetForm('ruleForm')">重置</el-button>-->
+            <div style="text-align: left">
+              <br>
+            <el-button type="success" @click="submitForm1('ruleForm')" >保存</el-button>
+
+            </div>
           </el-form-item>
         </el-col>
 
@@ -48,6 +46,7 @@
           <el-input type="textarea" v-model="ruleForm.inform1"></el-input>
         </el-form-item>
       </el-row>
+
 
       <el-row>
         <el-col :span="8" >
@@ -63,19 +62,23 @@
             </el-form-item>
           </el-form-item>
         </el-col>
-        <el-col :span="4" >
 
-          <el-form-item label="状态" label-width="100px">
-            --
+        <el-col :span="4" >
+          <el-form-item label="状态" >
+            <br>
+            <div style="text-align: left">--</div>
           </el-form-item>
         </el-col>
         <el-col :span="4" >
-
           <el-form-item label="操作">
+            <div style="text-align: left">
+              <br>
+              <el-button type="success" @click="submitForm2('ruleForm')" >保存</el-button>
 
-            <el-button type="success" @click="submitForm2('ruleForm')">保存</el-button>
+            </div>
           </el-form-item>
         </el-col>
+
 
       </el-row>
 
@@ -84,6 +87,8 @@
           <el-input type="textarea" v-model="ruleForm.inform2"></el-input>
         </el-form-item>
       </el-row>
+
+
       <el-row>
         <el-col :span="8" >
           <el-form-item label="标题3"   prop="name3"  class="inform-title">
@@ -100,17 +105,21 @@
         </el-col>
         <el-col :span="4" >
 
-          <el-form-item label="状态" label-width="100px">
-            --
+          <el-form-item label="状态" >
+            <br>
+            <div style="text-align: left">--</div>
           </el-form-item>
         </el-col>
         <el-col :span="4" >
-
           <el-form-item label="操作">
+            <div style="text-align: left">
+              <br>
+              <el-button type="success" @click="submitForm3('ruleForm')" >保存</el-button>
 
-            <el-button type="success" @click="submitForm3('ruleForm')">保存</el-button>
+            </div>
           </el-form-item>
         </el-col>
+
 
       </el-row>
 
@@ -120,13 +129,8 @@
         </el-form-item>
       </el-row>
       <div>
-      <el-button @click="resetForm('ruleForm')">清除内容</el-button>
+        <el-button @click="resetForm('ruleForm')">清除内容</el-button>
       </div>
-
-      <!--      <el-form-item>-->
-      <!--        <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>-->
-      <!--        <el-button @click="resetForm('ruleForm')">重置</el-button>-->
-      <!--      </el-form-item>-->
     </el-form>
 
   </el-card>
@@ -230,9 +234,7 @@ export default {
   background-color: darkgray;
   border-color: #333333;
 }
-.inform-title{
-  width: 80%;
-}
+
 .box-card {
   width: 100%;
   font-size: 13px;
@@ -242,15 +244,24 @@ export default {
   width: 100%;
   border: .5px solid black;
 }
-.inform-text{
+.box-card .el-form-item{
+  width: 50%;
+}
+.box-card .inform-text{
   width: 100%;
 }
-/*.el-form-item.is-required:not(.is-no-asterisk) .el-form-item__label-wrap>.el-form-item__label:after, .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:after {*/
-/*  content: '*';*/
-/*}*/
+
+
 .inform-text .el-form-item__label::after{
   color: red;
   content: '(内容最多为 200 个字符)';
+}
+
+.new{
+  height: 50px;
+  line-height: 20px;
+  text-align: left;
+  text-size: 50px;
 }
 
 </style>

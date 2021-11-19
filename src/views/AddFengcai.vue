@@ -11,7 +11,10 @@
             <img src="../assets/style_1.png" height="100%" width="100%">
           </div>
           <div class="boxStyleLabel" @click="choseStlye" id="styel_1">
-            <p class="text-styleLabel">模板1</p>
+            <div>
+              <p class="text-styleLabel">模板1</p>
+            </div>
+
           </div>
         </div>
         <div class="boxStyle">
@@ -90,9 +93,10 @@
     </div>
     <div class="boxFooter">
       <el-button class="bottoms-style" size="mini" type="success" @click="save('form')">保存</el-button>
-      <el-button class="bottoms-style-long" size="mini" type="warning" @click="upload('form')">提交审核</el-button>
+      <el-button class="bottoms-style" size="mini" type="warning" @click="upload('form')">提交审核</el-button>
       <el-button class="bottoms-style" size="mini" @click="back">返回</el-button>
     </div>
+    <div class="boxSpace"></div>
   </div>
 </template>
 
@@ -100,7 +104,6 @@
 .boxPage{
   height: 100%;
   width: 100%;
-  margin: 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
@@ -137,11 +140,15 @@
   /*background-color: #262f40;*/
 }
 .boxFooter{
-  height: 10%;
+  height: 8%;
   width: 100%;
   margin: 0;
   padding: 0;
   background-color: #ffffff;
+}
+.boxSpace{
+  width: 100%;
+  height: 2%;
 }
 .boxStyle{
   margin: 5%;
@@ -166,14 +173,12 @@
   justify-content: center;
 }
 .text-styleLabel{
+  flex: 1;
   text-align: center;
   line-height: 80%;
   font-weight: bold;
   color: rgb(255,255,255);
   z-index: 3;
-}
-.el-breadcrumb__inner {
-  font-size: larger;
 }
 
 /*右侧详情页*/
@@ -225,17 +230,10 @@
   height: 178px;
   display: block;
 }
-.bottoms-style,.bottoms-style-long{
-  width: 6%;
-  margin: 0;
+.bottoms-style{
   position: relative;
-  bottom: 60%;
-  font-size: 22px!important;
+  bottom: 110%;
   font-weight: bold;
-  text-align: center;
-}
-.bottoms-style-long{
-  width: 12%;
 }
 </style>
 
@@ -298,7 +296,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if(this.form.styleChose.length != 0) {
-            this.queryParams={formName};
+            this.queryParams=formName;
             alert('保存成功！');
           }else {
             alert('请选择一种模板！');
@@ -313,7 +311,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if(this.form.styleChose.length != 0) {
-            this.queryParams={formName};
+            this.queryParams=formName;
             sessionStorage.setItem('queryParam',JSON.stringify(this.queryParams))
             alert('提交成功！');
           }else {
@@ -326,7 +324,7 @@ export default {
       });
     },
     back() {
-
+      this.$router.replace('/fengcaitable')
     }
   }
 }

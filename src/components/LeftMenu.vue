@@ -5,7 +5,21 @@
       text-color="#fff"
       active-text-color="#00fdee"
       router>
-    <el-submenu index="1">
+    <el-menu-item index="/auditing">
+      <i class="el-icon-s-check"></i>
+      <span slot="title">信息审核</span>
+    </el-menu-item>
+    <el-submenu index="2">
+      <template slot="title">
+        <i class="el-icon-school"></i>
+        <span>社区服务</span>
+      </template>
+      <el-menu-item-group>
+        <el-menu-item index="/fengcaitable">社区风采</el-menu-item>
+        <el-menu-item index="/noticeboard">大屏通知</el-menu-item>
+      </el-menu-item-group>
+    </el-submenu>
+    <el-submenu index="3">
       <template slot="title">
         <i class="el-icon-notebook-1"></i>
         <span>日志管理</span>
@@ -15,7 +29,7 @@
         <el-menu-item index="/table"><i class="el-icon-document"></i>日志列表</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
-    <el-submenu index="2">
+    <el-submenu index="4">
       <template slot="title">
         <i class="el-icon-s-order"></i>
         <span>事件管理</span>
@@ -25,7 +39,7 @@
         <el-menu-item index="/eventlist"><i class="el-icon-document-copy"></i>事件列表</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
-    <el-submenu index="3">
+    <el-submenu index="5">
       <template slot="title">
         <i class="el-icon-menu"></i>
         <span>其他</span>
@@ -38,21 +52,21 @@
 </template>
 
 <script type="text/ecmascript-6">
-export default {
-  // methods: {
-  //   handleOpen(key, keyPath) {
-  //     console.log(key, keyPath);
-  //   },
-  //   handleClose(key, keyPath) {
-  //     console.log(key, keyPath);
-  //   }
-  // },
-  // computed: {
-  //   onRoutes() {
-  //     return this.$route.path.replace('/', '');
-  //   }
-  // }
-}
+  export default {
+    // methods: {
+    //   handleOpen(key, keyPath) {
+    //     console.log(key, keyPath);
+    //   },
+    //   handleClose(key, keyPath) {
+    //     console.log(key, keyPath);
+    //   }
+    // },
+    // computed: {
+    //   onRoutes() {
+    //     return this.$route.path.replace('/', '');
+    //   }
+    // }
+  }
 </script>
 
 <style>

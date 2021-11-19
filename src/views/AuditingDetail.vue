@@ -1,7 +1,7 @@
 <template>
   <div class="shenhe">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>审核</el-breadcrumb-item>
+      <el-breadcrumb-item>信息审核</el-breadcrumb-item>
       <el-breadcrumb-item>审核详情</el-breadcrumb-item>
     </el-breadcrumb>
 
@@ -74,7 +74,7 @@
             <el-button @click="cancel">关 闭</el-button>
       </span>
         </el-dialog>
-        <el-button>返回</el-button>
+        <el-button @click="back">返回</el-button>
       </el-row>
     </el-form>
   </div>
@@ -115,6 +115,9 @@ export default {
     },
     del(){
       this.delVisible = true;
+    },
+    back(){
+      this.$router.replace('/auditing')
     }
   }
 }

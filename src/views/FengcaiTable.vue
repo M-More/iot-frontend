@@ -104,7 +104,7 @@
                     请选择<i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native="$router.push('/About')">详情</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push('/fengcaidetail')">详情</el-dropdown-item>
                     <el-dropdown-item @click.native="deleteIt">删除</el-dropdown-item>
                     <el-dropdown-item @click.native="xiaxian">下线</el-dropdown-item>
                   </el-dropdown-menu>

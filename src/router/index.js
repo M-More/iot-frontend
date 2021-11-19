@@ -1,12 +1,17 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import About from '../components/About.vue'
+import Auditing from '../views/Auditing.vue'
 import Table from '../views/Table.vue'
 import Form from '../views/Form.vue'
 import EventList from '../views/EventList.vue'
 import Carousel from '../views/Carousel.vue'
 import Steps from '../views/Steps.vue'
+import AddFengcai from '../views/AddFengcai.vue'
+import NoticeBoard from '../views/NoticeBoard.vue'
+import FengcaiTable from '../views/FengcaiTable.vue'
+import FengcaiDetail from '../views/FengcaiDetail.vue'
+import AuditingDetail from '../views/AuditingDetail.vue'
 
 
 Vue.use(VueRouter)
@@ -18,9 +23,9 @@ const routes = [
     component: Home
   },
   {
-    path: '/about',
-    name: 'About',
-    component: About
+    path: '/auditing',
+    name: 'Auditing',
+    component: Auditing
   },
   {
     path: '/table',
@@ -46,6 +51,31 @@ const routes = [
     path:'/steps',
     name:'Steps',
     component: Steps
+  },
+  {
+    path:'/addfengcai',
+    name:'AddFengcai',
+    component: AddFengcai
+  },
+  {
+    path:'/noticeboard',
+    name:'NoticeBoard',
+    component: NoticeBoard
+  },
+  {
+    path:'/fengcaitable',
+    name:'FengcaiTable',
+    component: FengcaiTable
+  },
+  {
+    path:'/fengcaidetail',
+    name:'FengcaiDetail',
+    component: FengcaiDetail
+  },
+  {
+    path:'/auditingdetail',
+    name:'AuditingDetail',
+    component: AuditingDetail
   }
 ]
 
