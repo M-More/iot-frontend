@@ -10,20 +10,26 @@
       <div class="boxRight">
         <div class="xiangqing">
           <el-form ref="form" :model="form" :rules="rules" label-position="top" inline=True class="forms">
-            <el-form-item label="供应商名称" prop="name">
-              <el-input v-model="form.name" placeholder="1-25个字符"></el-input>
+            <el-form-item label="事件名称" prop="eventName">
+              <el-input v-model="form.eventName"
+                        placeholder="数字、英文或组合"
+                        onKeyUp="value=value.replace(/[\W]/g,'')"></el-input>
             </el-form-item>
-            <el-form-item label="供应商编码" prop="code">
-              <el-input v-model="form.code" placeholder="1-25个字符"></el-input>
+            <el-form-item label="通知描述" prop="notificationDescription">
+              <el-input v-model="form.notificationDescription" placeholder="1-25个字符"></el-input>
             </el-form-item>
-            <el-form-item label="联系电话" prop="contactNumber">
-              <el-input v-model="form.contactNumber" placeholder="1-25个字符"></el-input>
+            <el-form-item label="事件级别" prop="eventLevel">
+<!--              <el-input v-model="form.eventLevel" placeholder="1-25个字符"></el-input>-->
+              <el-select v-model="form.eventLevel" placeholder="选择事件级别">
+                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
-            <el-form-item label="联系人姓名" prop="contactName">
-              <el-input v-model="form.contactName" placeholder="1-25个字符"></el-input>
+            <el-form-item label="设备类型" prop="deviceTypeName">
+              <el-input v-model="form.deviceTypeName" placeholder="1-25个字符"></el-input>
             </el-form-item>
-            <el-form-item label="地址">
-              <el-input v-model="form.address"></el-input>
+            <el-form-item label="规则" prop="alarmName">
+              <el-input v-model="form.alarmName"></el-input>
             </el-form-item>
             <br>
             <el-form-item label="备注" class="el-form-item-full">
@@ -40,7 +46,6 @@
     </div>
     <div class="boxFooter">
       <el-button class="bottoms-style" size="mini" type="success" @click="save('form')">保存</el-button>
-      <el-button class="bottoms-style" size="mini" type="warning" @click="upload('form')">提交审核</el-button>
       <el-button class="bottoms-style" size="mini" @click="back">返回</el-button>
     </div>
     <div class="boxSpace"></div>
@@ -190,68 +195,67 @@
 export default {
   data(){
     return {
+      options:[{
+        value:'1',
+        label:"普通"
+      },{
+        value:'2',
+        label:"重要"
+      }],
+      postData:[],
       form: {
-        name: '',
-        code: '',
-        contactNumber: '',
-        contactName: '',
+        eventName: '',
+        notificationDescription: '',
+        eventLevel: '',
+        deviceTypeName: '',
+        alarmName: ''
       },
       rules: {
-        name: [
-          { required: true, message: '请输入供应商名称', trigger: 'blur' },
+        eventName: [
+          { required: true, message: '请输入事件名称', trigger: 'blur' },
         ],
-        code: [
-          { required: true, message: '请输入供应商编码', trigger: 'blur' }
+        notificationDescription: [
+          { required: true, message: '请输入通知描述', trigger: 'blur' }
         ],
-        contactNumber: [
-          { required: true, message: '请输入联系电话', trigger: 'blur' }
+        eventLevel: [
+          { required: true, message: '请输入事件级别', trigger: 'blur' }
         ],
-        contactName: [
-          { required: true, message: '请输入联系人姓名', trigger: 'blur' }
+        deviceTypeName: [
+          { required: true, message: '请输入设备类型', trigger: 'blur' }
+        ],
+        alarmName: [
+          { required: true, message: '请输入规则', trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
-    // choseStlye() {
-    //   let labelList = document.getElementsByClassName("boxStyleLabel");
-    //   for (let i = 0; i < labelList.length; i++) {
-    //     labelList[i].style.backgroundColor = "#7f7f7f" ;
-    //   }
-    //   document.elementFromPoint(event.clientX,event.clientY).style.backgroundColor= "#3e78cc";
-    //   this.form.styleChose = document.elementFromPoint(event.clientX,event.clientY).id;
-    // },
-    // handleAvatarSuccess(res, file) {
-    //   this.form.imageUrl = URL.createObjectURL(file.raw);
-    // },
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // if(this.form.styleChose.length != 0) {
-          //   this.queryParams=formName;
-            alert('保存成功！');
-           //else {
-          //   alert('还有未填项！');
-          // }
+          let postData={
+            eventName: this.form.eventName,
+            notificationDescription: this.form.notificationDescription,
+            eventLevel: this.form.eventLevel,
+            deviceTypeName: this.form.deviceTypeName,
+            alarmName: this.form.alarmName
+          };
+          this.axios({
+            method: 'post',
+            url:'http://localhost:8080/eventConfig/addEventConfig',
+            data:postData
+          }).then(response=>
+          {
+            console.log(response);
+          }).catch(error =>
+          {
+            console.log(error);
+          });
+
+          // alert('保存成功！');
+          this.$router.replace('/eventConfList');
         } else {
           console.log('error submit!!');
-          return false;
-        }
-      });
-    },
-    upload(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          // if(this.form.styleChose.length != 0) {
-          //   this.queryParams=formName;
-          //   sessionStorage.setItem('queryParam',JSON.stringify(this.queryParams))
-          //   alert('提交成功！');
-          // }else {
-          //   alert('请选择一种模板！');
-          // }
-          alert('提交成功！');
-        } else {
-          console.log('提交失败！');
           return false;
         }
       });
