@@ -13,6 +13,13 @@ import FengcaiTable from '../views/FengcaiTable.vue'
 import FengcaiDetail from '../views/FengcaiDetail.vue'
 import AuditingDetail from '../views/AuditingDetail.vue'
 
+import Inform from "../views/InformationCheck"
+import SupplierList from "../views/Supplier.vue"
+import EquipmentTypeList from "../views/EquipmentType.vue"
+import EquipmentList from "../views/Equipment.vue"
+import AlertList from "../views/Alert.vue"
+import EventConfList from "../views/EventConfiguration.vue"
+import EventConfAdd from "../views/EventConfAdd.vue";
 
 Vue.use(VueRouter)
 
@@ -76,6 +83,41 @@ const routes = [
     path:'/auditingdetail',
     name:'AuditingDetail',
     component: AuditingDetail
+  },
+  {
+    path:'/supplierList/inform',
+    name:'Inform',
+    component: Inform
+  },
+  {
+    path:'/supplierList',
+    name:'SupplierList',
+    component: SupplierList
+  },
+  {
+    path:'/equipmentTypeList',
+    name:'EquipmentTypeList',
+    component: EquipmentTypeList
+  },
+  {
+    path:'/equipmentList',
+    name:'EquipmentList',
+    component: EquipmentList
+  },
+  {
+    path:'/alertList',
+    name:'AlertList',
+    component: AlertList
+  },
+  {
+    path:'/eventConfList',
+    name:'EventConfList',
+    component: EventConfList
+  },
+  {
+    path:'/eventConfList/eventConfAdd',
+    name:'EventConfAdd',
+    component: EventConfAdd
   }
 ]
 

@@ -7,6 +7,9 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import Container from 'element-ui'
 
+import axios from 'axios'
+Vue.prototype.axios = axios
+
 Vue.use(ElementUI)
 Vue.use(Container)
 

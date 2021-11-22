@@ -46,6 +46,11 @@
       </template>
       <el-menu-item-group>
         <el-menu-item index="/carousel"><i class="el-icon-data-analysis"></i>走马灯展示</el-menu-item>
+        <el-menu-item index="/supplierList"><i class="el-icon-data-analysis"></i>供应商列表</el-menu-item>
+        <el-menu-item index="/equipmentTypeList"><i class="el-icon-data-analysis"></i>设备类型列表</el-menu-item>
+        <el-menu-item index="/equipmentList"><i class="el-icon-data-analysis"></i>设备列表</el-menu-item>
+        <el-menu-item index="/alertList"><i class="el-icon-data-analysis"></i>告警列表</el-menu-item>
+        <el-menu-item index="/eventConfList"><i class="el-icon-data-analysis"></i>事件配置列表</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
   </el-menu>
