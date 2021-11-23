@@ -338,6 +338,7 @@ export default {
           });
 
           alert('保存成功！');
+          // console.log(this.form.alarmName)
           this.$router.replace('/eventConfList');
         } else {
           console.log('error submit!!');

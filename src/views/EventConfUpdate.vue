@@ -18,10 +18,32 @@
         </el-select>
       </el-form-item>
       <el-form-item label="设备类型" prop="deviceTypeName">
-        <el-input v-model="form.deviceTypeName" placeholder="1-25个字符"></el-input>
+<!--        <el-input v-model="form.deviceTypeName" placeholder="1-25个字符"></el-input>-->
+        <el-select v-model="form.deviceTypeName"
+                   placeholder="选择设备类型"
+                   @change="selectDevName"
+        >
+          <el-option
+              v-for="item in optionsOfDev"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="规则" prop="alarmName">
-        <el-input v-model="form.alarmName"></el-input>
+<!--        <el-input v-model="form.alarmName"></el-input>-->
+        <el-select v-model="form.alarmName"
+                   multiple
+                   collapse-tags
+                   placeholder="选择规则">
+          <el-option
+              v-for="item in optionsOfRul"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name">
+          </el-option>
+        </el-select>
       </el-form-item>
 
       <!--  底部按钮-->
@@ -40,20 +62,22 @@ export default {
   data(){
     return {
       options:[{
-        value:'1',
+        value:'普通',
         label:"普通"
       },{
-        value:'2',
+        value:'重要',
         label:"重要"
       }],
       postData:[],
+      optionsOfDev:[],
+      optionsOfRul:[],
       form: {
         eventConfigId: sessionStorage.getItem('eventConfigId'),
         eventName: sessionStorage.getItem('eventName'),
         eventLevel: sessionStorage.getItem('eventLevel'),
         deviceTypeName: sessionStorage.getItem('deviceTypeName'),
-        notificationDescription: sessionStorage.getItem('notificationDescription'),
-        alarmName: sessionStorage.getItem('alarmName'),
+        alarmName: sessionStorage.getItem('alarmName').split(','),
+        updateUser:'Fzn'
       },
 
       rules: {
@@ -72,19 +96,47 @@ export default {
       }
     }
   },
+  mounted() {
+      this.fetchDev()
+    console.log(typeof sessionStorage.getItem('alarmName'))
+  },
   methods:{
+    fetchDev(){
+      //读取设备类型
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/deviceType/getAll',
+      }).then(response =>
+      {
+        let optionsList = [];
+        for(let i=0;i<response.data.length;i++){
+          console.log(Object.values(response.data)[i]);
+          let optionx={
+            id:i,
+            name:Object.values(response.data)[i],
+          };
+          optionsList.push(optionx);
+        }
+        console.log(optionsList)
+        this.optionsOfDev = optionsList;
+      }).catch(error =>
+      {
+        console.log(error);
+      });
+    },
     save(){
       let postData={
         eventName: this.form.eventName,
         eventLevel: this.form.eventLevel,
         deviceTypeName: this.form.deviceTypeName,
-        alarmName: this.form.alarmName,
-        createUser:"fzn"
+        alarmName: this.form.alarmName.toString(),
+        updateUser:"fzn",
+        eventConfigId: this.form.eventConfigId
       };
       console.log(postData.eventName);
       this.axios({
         method: 'post',
-        url:'http://localhost:8080/eventConfig/add',
+        url:'http://localhost:8080/eventConfig/update',
         params:postData
       }).then(response=>
       {
@@ -95,7 +147,35 @@ export default {
       });
 
       alert('保存成功！');
+      console.log(postData.alarmName);
       this.$router.replace('/eventConfList');
+    },
+    selectDevName(){
+      let postData={
+        deviceTypeName:this.form.deviceTypeName
+      };
+      //读取规则
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/alarm/getbydevice',
+        params: postData
+      }).then(response =>
+      {
+        let optionsList = [];
+        for(let i=0;i<response.data.length;i++){
+          console.log(Object.values(response.data)[i]);
+          let optionx={
+            id:i,
+            name:Object.values(response.data)[i],
+          };
+          optionsList.push(optionx);
+        }
+        console.log(optionsList)
+        this.optionsOfRul = optionsList;
+      }).catch(error =>
+      {
+        console.log(error);
+      });
     },
     back(){
       this.$router.replace('/eventConfList')
