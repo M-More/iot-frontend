@@ -20,16 +20,43 @@
             </el-form-item>
             <el-form-item label="事件级别" prop="eventLevel">
 <!--              <el-input v-model="form.eventLevel" placeholder="1-25个字符"></el-input>-->
-              <el-select v-model="form.eventLevel" placeholder="选择事件级别">
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+              <el-select v-model="form.eventLevel"
+                         placeholder="选择事件级别">
+                <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="设备类型" prop="deviceTypeName">
-              <el-input v-model="form.deviceTypeName" placeholder="1-25个字符"></el-input>
+<!--              <el-input v-model="form.deviceTypeName" placeholder="1-25个字符"></el-input>-->
+              <el-select v-model="form.deviceTypeName"
+                         placeholder="选择设备类型"
+                         @change="selectDevName"
+              >
+                <el-option
+                    v-for="item in optionsOfDev"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.name">
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="规则" prop="alarmName">
-              <el-input v-model="form.alarmName"></el-input>
+<!--              <el-input v-model="form.alarmName"></el-input>-->
+              <el-select v-model="form.alarmName"
+                         multiple
+                         collapse-tags
+                         placeholder="选择规则">
+                <el-option
+                    v-for="item in optionsOfRul"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.name">
+                </el-option>
+              </el-select>
             </el-form-item>
             <br>
             <el-form-item label="备注" class="el-form-item-full">
@@ -196,12 +223,14 @@ export default {
   data(){
     return {
       options:[{
-        value:'1',
+        value:'普通',
         label:"普通"
       },{
-        value:'2',
+        value:'重要',
         label:"重要"
       }],
+      optionsOfDev:[],
+      optionsOfRul:[],
       postData:[],
       form: {
         eventName: '',
@@ -229,7 +258,60 @@ export default {
       }
     }
   },
+  mounted() {
+    this.fetchDev()
+  },
   methods: {
+    fetchDev(){
+      //读取设备类型
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/deviceType/getAll',
+      }).then(response =>
+      {
+        let optionsList = [];
+        for(let i=0;i<response.data.length;i++){
+          console.log(Object.values(response.data)[i]);
+          let optionx={
+            id:i,
+            name:Object.values(response.data)[i],
+          };
+          optionsList.push(optionx);
+        }
+        console.log(optionsList)
+        this.optionsOfDev = optionsList;
+      }).catch(error =>
+      {
+        console.log(error);
+      });
+    },
+    selectDevName(){
+      let postData={
+        deviceTypeName:this.form.deviceTypeName
+      };
+      //读取规则
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/alarm/getbydevice',
+        params: postData
+      }).then(response =>
+      {
+        let optionsList = [];
+        for(let i=0;i<response.data.length;i++){
+          console.log(Object.values(response.data)[i]);
+          let optionx={
+            id:i,
+            name:Object.values(response.data)[i],
+          };
+          optionsList.push(optionx);
+        }
+        console.log(optionsList)
+        this.optionsOfRul = optionsList;
+      }).catch(error =>
+      {
+        console.log(error);
+      });
+    },
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -238,21 +320,24 @@ export default {
             notificationDescription: this.form.notificationDescription,
             eventLevel: this.form.eventLevel,
             deviceTypeName: this.form.deviceTypeName,
-            alarmName: this.form.alarmName
+            alarmName: this.form.alarmName.join(','),
+            createUser:"fzn"
           };
+          console.log(postData)
           this.axios({
             method: 'post',
-            url:'http://localhost:8080/eventConfig/addEventConfig',
-            data:postData
+            url:'http://localhost:8080/eventConfig/add',
+            params:postData
           }).then(response=>
           {
+            console.log("成功");
             console.log(response);
           }).catch(error =>
           {
             console.log(error);
           });
 
-          // alert('保存成功！');
+          alert('保存成功！');
           this.$router.replace('/eventConfList');
         } else {
           console.log('error submit!!');

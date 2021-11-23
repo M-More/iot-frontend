@@ -13,6 +13,7 @@ import FengcaiTable from '../views/FengcaiTable.vue'
 import FengcaiDetail from '../views/FengcaiDetail.vue'
 import AuditingDetail from '../views/AuditingDetail.vue'
 
+
 import Inform from "../views/InformationCheck"
 import SupplierList from "../views/Supplier.vue"
 import EquipmentTypeList from "../views/EquipmentType.vue"
@@ -20,8 +21,9 @@ import EquipmentList from "../views/Equipment.vue"
 import AlertList from "../views/Alert.vue"
 import EventConfList from "../views/EventConfiguration.vue"
 import EventConfAdd from "../views/EventConfAdd.vue";
+import EventConfUpdate from "../views/EventConfUpdate.vue";
 
-Vue.use(VueRouter)
+  Vue.use(VueRouter)
 
 const routes = [
   {
@@ -118,6 +120,11 @@ const routes = [
     path:'/eventConfList/eventConfAdd',
     name:'EventConfAdd',
     component: EventConfAdd
+  },
+  {
+    path:'/eventConfList/eventConfUpdate',
+    name:'EventConfUpdate',
+    component: EventConfUpdate
   }
 ]
 
