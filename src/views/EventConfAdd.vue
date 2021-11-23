@@ -20,8 +20,13 @@
             </el-form-item>
             <el-form-item label="事件级别" prop="eventLevel">
 <!--              <el-input v-model="form.eventLevel" placeholder="1-25个字符"></el-input>-->
-              <el-select v-model="form.eventLevel" placeholder="选择事件级别">
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+              <el-select v-model="form.eventLevel"
+                         placeholder="选择事件级别">
+                <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -238,12 +243,14 @@ export default {
             notificationDescription: this.form.notificationDescription,
             eventLevel: this.form.eventLevel,
             deviceTypeName: this.form.deviceTypeName,
-            alarmName: this.form.alarmName
+            alarmName: this.form.alarmName,
+            createUser:"fzn"
           };
+          console.log(postData)
           this.axios({
             method: 'post',
-            url:'http://localhost:8080/eventConfig/addEventConfig',
-            data:postData
+            url:'http://localhost:8080/eventConfig/add',
+            params:postData
           }).then(response=>
           {
             console.log(response);
@@ -252,7 +259,7 @@ export default {
             console.log(error);
           });
 
-          // alert('保存成功！');
+          alert('保存成功！');
           this.$router.replace('/eventConfList');
         } else {
           console.log('error submit!!');
