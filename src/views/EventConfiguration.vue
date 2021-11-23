@@ -63,7 +63,7 @@
             <template>
               <el-table
                   class="el-table-list"
-                  :data="tableData.slice((page-1)*pageSize,page*pageSize)"
+                  :data="tableData"
                   :header-cell-style="headerStyle2"
                   :cell-style="cellStyle2"
                   row-style="height:10px"
@@ -108,7 +108,7 @@
             :page-sizes="[1,2,3, 10, 20, 50]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="tableData.length">
+            :total=this.total>
         </el-pagination>
       </div>
     </div>
@@ -121,10 +121,10 @@ export default {
   data() {
     return {
       options:[{
-        value:'1',
+        value:'普通',
         label:"普通"
       },{
-        value:'2',
+        value:'重要',
         label:"重要"
       }],
       eventName:"",
@@ -144,32 +144,7 @@ export default {
 
       indexTable: [{}],
       tabTable: [{}],
-      tableData1: [{
-        eveConfName: '供应商1',
-        eveLevel: 1,
-        equipType: '供应商1联系人1',
-        action:'按钮',
-      }, {
-        eveConfName: '供应商2',
-        eveLevel: 2,
-        equipType: '供应商2联系人1',
-        action:'按钮',
-      },{
-        eveConfName: '供应商3',
-        eveLevel: 3,
-        equipType: '供应商3联系人1',
-        action:'按钮',
-      },{
-        eveConfName: '供应商4',
-        eveLevel: 4,
-        equipType: '供应商4联系人1',
-        action:'按钮',
-      },{
-        eveConfName: '供应商5',
-        eveLevel: 5,
-        equipType: '供应商5联系人1',
-        action:'按钮',
-      }],
+
       dialogVisible: false,
       inputTitle: '',
       inputLevel: '',
@@ -181,23 +156,25 @@ export default {
     }
   },
   mounted() {
-    this.fetchData()
+    this.fetchData(this.page,this.pageSize)
   },
   methods: {
-    fetchData(){
+    //读表
+    fetchData(page,pageSize){
       let postData={
-        page: this.page,
-        pageSize: this.pageSize
+        page: page,
+        pageSize: pageSize
       };
+      console.log(postData);
       this.axios({
         method: 'get',
         url: 'http://localhost:8080/eventConfig/getAll',
         params: postData
       }).then(response =>
       {
-        console.log(response.data);
-        this.tableData = response.data;
-        this.total=response.total;
+        console.log(response.data.data);
+        this.tableData = response.data.data;
+        this.total=response.data.total;
       }).catch(error =>
       {
         console.log(error);
@@ -340,12 +317,16 @@ export default {
       console.log(tab, event);
     },
     handleSizeChange(val) {
+      //更改每页最大数量
       this.page = 1;
       this.pageSize = val;
+      this.fetchData(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
+      //换页
       this.page = val;
+      this.fetchData(val,this.pageSize)
       console.log(`当前页: ${val}`);
     },
     handleChange(value) {
