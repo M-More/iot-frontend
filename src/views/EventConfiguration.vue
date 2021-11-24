@@ -1,7 +1,7 @@
 <template>
   <div class="eveConfList">
     <!--显示当前页面的路径，快速返回之前的任意页面。-->
-    <el-breadcrumb separator="/" class="eveConfBreadcrumb">
+    <el-breadcrumb separator="/" class="eveInfoBreadcrumb">
       <el-breadcrumb-item :to="{ path: '/' }">事件配置列表</el-breadcrumb-item>
       <el-breadcrumb-item><a href="/">信息列表</a></el-breadcrumb-item>
     </el-breadcrumb>
@@ -120,17 +120,12 @@ export default {
   name: "EventConfiguration",
   data() {
     return {
-      options:[{
-        value:'普通',
-        label:"普通"
-      },{
-        value:'重要',
-        label:"重要"
-      }],
+      options:[{value:'普通', label:"普通"},
+        {value:'重要', label:"重要"}],
       eventName:"",
       eventLevel:"",
       deviceTypeName:"",
-      noticeDescribe:"",
+      notificationDescription:"",
       eveRule:"",
       eveConfCreateTime:'',
       eveConfUpdateTime:'',
@@ -139,7 +134,7 @@ export default {
       search: '',
       disablePage: false,
       total: 20,
-      pageSize: 2,
+      pageSize: 3,
       page: 1,
 
       indexTable: [{}],
@@ -172,7 +167,7 @@ export default {
         params: postData
       }).then(response =>
       {
-        console.log(response.data.data);
+        console.log(response.data);
         this.tableData = response.data.data;
         this.total=response.data.total;
       }).catch(error =>
@@ -214,12 +209,12 @@ export default {
       sessionStorage.setItem('alarmName',row.alarmName);
       this.$router.replace({path: '/eventConfList/eventConfUpdate'})
     },
+    //  新增，跳转到新增页面
     eveConfAdd(){
-      //  新增，跳转到新增页面
       this.$router.replace({path: '/eventConfList/eventConfAdd'})
     },
+    //  删除
     eveConfDel(index, row){
-      //  删除
       // console.log(index, row);
       this.$confirm('删除操作, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -338,7 +333,7 @@ export default {
 
 <style scoped>
 /*面包屑样式：行高*/
-.eveConfBreadcrumb{
+.eveInfoBreadcrumb{
   height: 30px;
 }
 /*头*/

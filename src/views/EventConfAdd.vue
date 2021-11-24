@@ -330,15 +330,20 @@ export default {
             params:postData
           }).then(response=>
           {
-            console.log("成功");
+            // console.log("成功");
             console.log(response);
+            if (response.data.code === 0) {
+              alert('保存成功！');
+            }
+            if (response.data.code === 9) {
+              alert('添加失败（编号重复）');
+            }
           }).catch(error =>
           {
             console.log(error);
           });
 
-          alert('保存成功！');
-          // console.log(this.form.alarmName)
+          // alert('保存成功！');
           this.$router.replace('/eventConfList');
         } else {
           console.log('error submit!!');

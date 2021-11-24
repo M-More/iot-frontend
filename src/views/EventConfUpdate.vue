@@ -18,11 +18,9 @@
         </el-select>
       </el-form-item>
       <el-form-item label="设备类型" prop="deviceTypeName">
-<!--        <el-input v-model="form.deviceTypeName" placeholder="1-25个字符"></el-input>-->
         <el-select v-model="form.deviceTypeName"
                    placeholder="选择设备类型"
-                   @change="selectDevName"
-        >
+                   @change="selectDevName">
           <el-option
               v-for="item in optionsOfDev"
               :key="item.id"
@@ -32,7 +30,6 @@
         </el-select>
       </el-form-item>
       <el-form-item label="规则" prop="alarmName">
-<!--        <el-input v-model="form.alarmName"></el-input>-->
         <el-select v-model="form.alarmName"
                    multiple
                    collapse-tags
@@ -44,6 +41,10 @@
               :value="item.name">
           </el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="通知描述" prop="notificationDescription">
+        <el-input v-model="form.notificationDescription"
+        :disabled="true"></el-input>
       </el-form-item>
 
       <!--  底部按钮-->
@@ -77,7 +78,9 @@ export default {
         eventLevel: sessionStorage.getItem('eventLevel'),
         deviceTypeName: sessionStorage.getItem('deviceTypeName'),
         alarmName: sessionStorage.getItem('alarmName').split(','),
+        notificationDescription: sessionStorage.getItem('notificationDescription'),
         updateUser:'Fzn'
+
       },
 
       rules: {
@@ -97,7 +100,8 @@ export default {
     }
   },
   mounted() {
-      this.fetchDev()
+    this.fetchDev()
+    this.selectDevName()
     console.log(typeof sessionStorage.getItem('alarmName'))
   },
   methods:{
