@@ -6,16 +6,28 @@
       </div>
 
       <div class="welcome-name">
-        <p class="welcome-name-content">欢迎登录：
-          <el-select v-model="query" placeholder="请选择">
-            <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-            </el-option>
-          </el-select>
-        </p>
+        <el-row :gutter="10">
+          <el-col :span="7">
+            <el-button style="text-align: right" type="success" @click="changeHtml">跳转</el-button>
+          </el-col>
+          <el-col :span="5">
+            <p class="welcome-name-content">欢迎登录：</p>
+          </el-col>
+          <el-col :span="10">
+<!--            <p class="welcome-name-content">欢迎登录：-->
+              <el-select v-model="query" placeholder="请选择">
+                <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                </el-option>
+              </el-select>
+<!--            </p>-->
+          </el-col>
+        </el-row>
+
+
       </div>
 
       <div class="personal-center">
@@ -57,6 +69,11 @@
         }],
         query: '选项1',
         queryCenters: '01'
+      }
+    },
+    methods:{
+      changeHtml(){
+        this.$router.replace({path: '/BigPingF'})
       }
     }
   }

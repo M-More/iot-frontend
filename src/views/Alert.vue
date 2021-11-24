@@ -1,5 +1,5 @@
 <template>
-  <div class="alertList">
+  <div class="alarmList">
     <!--显示当前页面的路径，快速返回之前的任意页面。-->
     <el-breadcrumb separator="/" class="alertBreadcrumb">
       <el-breadcrumb-item :to="{ path: '/' }">告警列表</el-breadcrumb-item>
@@ -10,19 +10,13 @@
     <el-row class="el-row2">
       <p>告警查询</p>
       <el-col :span="24">
-        <div class="alertQuire-div">
-          <el-form class="alertQuire-form">
+        <div class="alarmQuire-div">
+          <el-form class="alarmQuire-form">
             <el-row class="alertQuire-row-1">
               <!--查询字段-->
-              <el-col style="font-weight: 700" :span="6">
-                告警名称
-              </el-col>
-              <el-col style="font-weight: 700" :span="6">
-                告警编码
-              </el-col>
-              <el-col style="font-weight: 700" :span="6">
-                告警级别
-              </el-col>
+              <el-col style="font-weight: 700" :span="6">告警名称</el-col>
+              <el-col style="font-weight: 700" :span="6">告警编码</el-col>
+              <el-col style="font-weight: 700" :span="6">告警级别</el-col>
             </el-row>
             <el-row class="alertQuire-row-2">
               <!--查询内容输入-->
@@ -33,18 +27,25 @@
               </el-col>
               <el-col :span="6">
                 <el-form-item>
-                  <el-input v-model="inputTitle" placeholder="请输入告警编码"></el-input>
+                  <el-input v-model="inputCode" placeholder="请输入告警编码"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item>
-                  <el-input v-model="inputTitle" placeholder="请输入告警级别"></el-input>
+                  <el-select v-model="inputLevel" placeholder="选择事件级别">
+                    <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="6" >
                 <el-form-item style="text-align: right;">
-                  <el-button class="el-button1" type="warning" @click="alertQuery">查询</el-button>
-                  <el-button class="el-button2" type="danger"  @click="resetForm" >重置</el-button>
+                  <el-button  type="warning" @click="alertQuery">查询</el-button>
+                  <el-button  type="danger"  @click="resetForm" >重置</el-button>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -56,20 +57,14 @@
     <!--下方列表信息部分-->
     <div class="detailList">
       <el-row>
-        <el-col :span="8">
-          <p>列表</p>
-        </el-col>
-        <el-col :span="8" >
-          <el-button class="el-button1" type="success" @click="alertAdd">新增</el-button>
-        </el-col>
-        <el-col :span="8" >
-          <el-button class="el-button1" type="success" @click="reflash">刷新</el-button>
-        </el-col>
+        <p>
+          告警信息
+          <el-button  type="success" @click="AlertAdd" style="float:right; margin-right: 18px">新增</el-button>
+        </p>
       </el-row>
 
       <div>
         <el-tabs style="background: white; line-height: 10px" v-model="activeName" type="card" @tab-click="handleClick">
-          <el-tab-pane label="告警规则信息" name="first">
             <template>
               <el-table
                   class="el-table-list"
@@ -79,167 +74,48 @@
                   row-style="height:10px"
                   style="width: 100%; font-size: 8px;">
                 <el-table-column
-                    prop="alertName"
+                    prop="alarmName"
                     label="告警名称"
-                    width="100px"
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="alertId"
+                    prop="alarmCode"
                     label="告警编码"
-                    width="100px"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
-                    prop="alertType"
+                    prop="alarmLevel"
                     label="告警类型"
-                    width="150px"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
-                    prop="alertDefEquip"
+                    prop="deviceTypeName"
                     label="默认设备"
-                    width="150px"
-                    show-overflow-tooltip><!--原createTime-->
+                    show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
-                    prop="alertDefSwitch"
-                    label="默认开关"
-                    width="150px"
-                    show-overflow-tooltip><!--原creater-->
+                    prop="alarmStatus"
+                    label="状态"
+                    show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
-                    prop="alertCreateTime"
+                    prop="createTime"
                     label="创建时间"
-                    width="150px"
-                    show-overflow-tooltip><!--原creater-->
+                    show-overflow-tooltip>
                 </el-table-column>
 
                 <el-table-column
                     prop="action"
                     label="操作"
-                    width="150px"
+                    align="center"
                     show-overflow-tooltip>
                   <template slot-scope="scope">
-                    <el-button class="alertUpdateButt" type="text" @click="alertUpdate">修改信息</el-button>
+                    <el-button class="alertUpdateButt" type="text" @click="alertUpdate(scope.$index, scope.row)">修改信息</el-button>
                     <el-button type="text" @click="alertDel(scope.$index, scope.row)">删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
             </template>
-          </el-tab-pane>
-          <el-tab-pane label="信息风采" name="second">
-            <!--            <template>-->
-            <!--              <el-table-->
-            <!--                  class="el-table-list"-->
-            <!--                  :data="tableData"-->
-            <!--                  :header-cell-style="headerStyle2"-->
-            <!--                  :cell-style="cellStyle2"-->
-            <!--                  row-style="height:10px"-->
-            <!--                  style="width: 100%; font-size: 8px;">-->
-            <!--                <el-table-column-->
-            <!--                    prop="number"-->
-            <!--                    label="序号"-->
-            <!--                    width="50px"-->
-            <!--                >-->
-            <!--                </el-table-column>-->
-            <!--                <el-table-column-->
-            <!--                    prop="title"-->
-            <!--                    label="标题"-->
-            <!--                    width="150px"-->
-            <!--                    show-overflow-tooltip>-->
-            <!--                </el-table-column>-->
-            <!--                <el-table-column-->
-            <!--                    prop="community"-->
-            <!--                    label="所属社区"-->
-            <!--                    width="150px"-->
-            <!--                    show-overflow-tooltip>-->
-            <!--                </el-table-column>-->
-            <!--                <el-table-column-->
-            <!--                    prop="createTime"-->
-            <!--                    label="创建时间"-->
-            <!--                    width="150px"-->
-            <!--                    show-overflow-tooltip>-->
-            <!--                </el-table-column>-->
-            <!--                <el-table-column-->
-            <!--                    prop="creater"-->
-            <!--                    label="创建人"-->
-            <!--                    width="150px"-->
-            <!--                    show-overflow-tooltip>-->
-            <!--                </el-table-column>-->
-            <!--                <el-table-column-->
-            <!--                    prop="status"-->
-            <!--                    label="状态"-->
-            <!--                    width="150px"-->
-            <!--                    show-overflow-tooltip>-->
-            <!--                  <template slot-scope="item">-->
-            <!--                    <span :class="item.row.status === '已发布' ? 'yifabu' :-->
-            <!--                            (item.row.status === '未审核' || item.row.status === '已驳回' ? 'weishenheyibohui' : 'shenhezhong')">-->
-            <!--                      {{item.row.status}}-->
-            <!--                    </span>-->
-            <!--                  </template>-->
-            <!--                </el-table-column>-->
-            <!--                <el-table-column-->
-            <!--                    prop="action"-->
-            <!--                    label="操作"-->
-            <!--                    width="150px"-->
-            <!--                    show-overflow-tooltip>-->
-            <!--                  <template slot-scope="item">-->
-            <!--                    <el-button-->
-            <!--                        type="text" @click="audit"-->
-            <!--                        v-if="item.row.status==='未审核' || item.row.status==='审核中'">-->
-            <!--                      审核-->
-            <!--                    </el-button>-->
-            <!--                    <el-button-->
-            <!--                        type="text" @click.native.prevent="clickEventDialog(item.row)">-->
-            <!--                      流程信息-->
-            <!--                    </el-button>-->
-
-            <!--                    <el-dialog-->
-            <!--                        class="tanchuang"-->
-            <!--                        title="流程信息"-->
-            <!--                        :visible.sync="dialogVisible"-->
-            <!--                        :show-close="false"-->
-            <!--                        :append-to-body="true"-->
-            <!--                        width="60%">-->
-            <!--                      <div>-->
-            <!--                        <span>新增人： </span>-->
-            <!--                        <span>{{creater}}</span>-->
-            <!--                        <br>-->
-            <!--                        <span>新增时间： </span>-->
-            <!--                        <span>{{createTime}}</span>-->
-            <!--                        <br>-->
-            <!--                        <br>-->
-            <!--                        <span>机审时间： </span>-->
-            <!--                        <span>{{machineTime}}</span>-->
-            <!--                        <br>-->
-            <!--                        <span>机审结果： </span>-->
-            <!--                        <span>{{machineRes}}-->
-            <!--                          </span>-->
-            <!--                        <br>-->
-            <!--                        <br>-->
-            <!--                        <span>人工审核人： </span>-->
-            <!--                        <span>{{artificialPeo}}</span>-->
-            <!--                        <br>-->
-            <!--                        <span>人工审核时间： </span>-->
-            <!--                        <span>{{artificialTime}}</span>-->
-            <!--                        <br>-->
-            <!--                        <span>人工结果： </span>-->
-            <!--                        <span>{{artificialRes}}</span>-->
-            <!--                        <br>-->
-            <!--                      </div>-->
-            <!--                      <span slot="footer" class="dialog-footer">-->
-            <!--                        <el-button size="mini" @click="dialogVisible = false">关 闭</el-button>-->
-            <!--                      </span>-->
-            <!--                    </el-dialog>-->
-            <!--                  </template>-->
-            <!--                </el-table-column>-->
-            <!--              </el-table>-->
-            <!--            </template>-->
-          </el-tab-pane>
-          <el-tab-pane label="大屏通知" name="third"></el-tab-pane>
-          <el-tab-pane label="大屏风采" name="fourth"></el-tab-pane>
-          <el-tab-pane label="物业信息公开" name="fifth"></el-tab-pane>
         </el-tabs>
       </div>
 
@@ -248,11 +124,11 @@
         <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page="currentPage4"
-            :page-sizes="[1, 2, 3]"
-            :page-size="3"
+            :current-page="page"
+            :page-sizes="[1,2,3,10,20,50]"
+            :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="4">
+            :total=this.total>
         </el-pagination>
       </div>
     </div>
@@ -264,89 +140,83 @@ export default {
   name: "Alert",
   data() {
     return {
-      alertName:"",
-      alertId:"",
-      alertDefEquip:"",
-      alertType:"",
-      alertDefSwitch:"",
-      alertCreateTime:"",
-      alertUpdateTime:"",
-      alertStatus:'',
-      alertRuleExpla:'',
+      // 警告下拉框数据
+      options:[{
+        value:'普通',
+        label:"普通"
+      },{
+        value:'重要',
+        label:"重要"
+      }],
+      // 表头字段信息
+      alarmName:"",
+      alarmCode:"",
+      //告警类型
+      alarmLevel:"",
+      //设备类型
+      deviceTypeName:"",
+      //状态
+      alarmStatus:"",
+      createTime:"",
+      updateTime:"",
 
-      // tableData: [],
+      tableData: [],
       search: '',
       disablePage: false,
-      total: 0,
-      pageSize: 5,
-      currentPage: 1,
+      total: 20,
+      pageSize: 2,
+      page: 1,  //当前页
 
-      indexTable: [{
-      }],
-      tabTable: [{
-      }],
-      tableData: [{
-        alertName: '供应商1',
-        alertId: 1,
-        alertType: '供应商1联系人1',
-        alertDefEquip: '13212398765',
-        alertDefSwitch: '地址1',
-        alertCreateTime:'已发布',
-        action:'按钮',
-      }, {
-        alertName: '供应商2',
-        alertId: 2,
-        alertType: '供应商2联系人1',
-        alertDefEquip: '13212398765',
-        alertDefSwitch: '地址2',
-        alertCreateTime:'审核中',
-        action:'按钮',
-      },{
-        alertName: '供应商3',
-        alertId: 3,
-        alertType: '供应商3联系人1',
-        alertDefEquip: '13212398765',
-        alertDefSwitch: '地址3',
-        alertCreateTime:'未审核',
-        action:'按钮',
-      },{
-        alertName: '供应商4',
-        alertId: 4,
-        alertType: '供应商4联系人1',
-        alertDefEquip: '13212398765',
-        alertDefSwitch: '地址4',
-        alertCreateTime:'已发布',
-        action:'按钮',
-      },{
-        alertName: '供应商5',
-        alertId: 5,
-        alertType: '供应商5联系人1',
-        alertDefEquip: '13212398765',
-        alertDefSwitch: '地址5',
-        alertCreateTime:'已发布',
-        action:'按钮',
-      }],
-      dialogVisible: false,
+      //搜索框默认值
       inputTitle: '',
-      inputState: '',
+      inputCode: '',
+      inputLevel: '',
       activeName: 'first',
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4,
+
       isSearch: true,
       toBeSearched: [],
     }
   },
+
+  mounted() {
+    this.fetchData(this.page,this.pageSize)
+  },
+
   methods: {
+    //读表
+    fetchData(page,pageSize){
+      let postData={
+        page: page,
+        pageSize: pageSize
+      };
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/alarm/getAll',
+        params: postData
+      }).then(response =>
+      {
+        console.log(response.data.data);
+        console.log(typeof response.data.data);
+        console.log(response.data.data[0].createTime);
+        this.tableData = response.data.data;
+
+        this.total = response.data.total;
+      }).catch(error =>
+      {
+        console.log(error);
+      });
+    },
+
     reflash(){
-      //刷新
+      //刷新页面
       this.$router.go(0);
     },
+
     alertQuery(){
-      //  查询
       let postData = this.qs.stringify({
-        alertName: this.search
+        // 待写参数
+
+
       });
       this.axios({
         method: 'post',
@@ -361,45 +231,44 @@ export default {
         console.log(error);
       });
     },
-    alertUpdate(){
+    alertUpdate(index, row){
       //  修改，跳转到修改页面
-      this.$router.replace({path: '/supplierList/inform'})
+
+      // 传入修改表格参数
+      sessionStorage.setItem('alarmName',row.alarmName);
+      sessionStorage.setItem('alarmCode',row.alarmCode);
+      sessionStorage.setItem('alarmLevel',row.alarmLevel);
+      sessionStorage.setItem('deviceTypeName',row.deviceTypeName);
+      sessionStorage.setItem('alarmStatus',row.alarmStatus);
+      sessionStorage.setItem('ruleDescription',row.ruleDescription);
+
+      // 跳转到修改页面
+      this.$router.replace({path: '/alertList/alertUpdate'})
     },
-    alertAdd(){
+
+    AlertAdd(){
       //  新增，跳转到新增页面
-      this.$router.replace({path: '/supplierList/inform'})
+      this.$router.replace({path: '/alertList/alertAdd'})
     },
+
     alertDel(index, row){
       //  删除
-      console.log(index, row);
       this.$confirm('删除操作, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let postData = this.qs.stringify({
-          alertId: row.alertId,
-        });
+        let postData = {
+          alarmCode: row.alarmCode,
+        };
         this.axios({
           method: 'post',
-          url:'/delete',
-          data:postData
+          url:'http://localhost:8080/alarm/delete',
+          params:postData
         }).then(response =>
         {
-          this.getPages();
-          this.currentPage = 1;
-          this.axios.post('/page').then(response =>
-          {
-            this.tableData = response.data;
-          }).catch(error =>
-          {
-            console.log(error);
-          });
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
           console.log(response);
+          this.reflash();
         }).catch(error =>
         {
           console.log(error);
@@ -412,55 +281,13 @@ export default {
         });
       });
     },
-    getPages() {
-      this.axios.post('/rows').then(response =>
-      {
-        this.total = response.data;
-      }).catch(error =>
-      {
-        console.log(error);
-      });
-    },
-    clickEventDialog(row){
-      this.dialogVisible = true;
-      console.log(row.creater)
-      this.creater=row.creater
-      this.createTime=row.createTime
-      this.machineTime=row.machineTime
-      this.machineRes=row.machineRes
-      this.artificialPeo=row.artificialPeo
-      this.artificialTime=row.artificialTime
-      this.artificialRes=row.artificialRes
-    },
+
     resetForm() {
       this.inputTitle='';
       this.inputState='';
+      this.inputLevel='';
     },
-    searchFile(){
-      if (this.isSearch) {
-        this.toBeSearched = this.tableData
-        this.isSearch = false
-      }
-      let data1 = this.toBeSearched.filter(data => {
-        return Object.keys(data).some(key => {
-          return String(data[key]).toLowerCase().indexOf(this.inputTitle)> -1
-        })
-      })
-      this.tableData = data1.filter(data1 => {
-        return Object.keys(data1).some(key => {
-          return String(data1[key]).toLowerCase().indexOf(this.inputState)> -1
-        })
-      })
-    },
-    headerStyle({rowIndex}) {
-      if (rowIndex === 0) {
-        return 'line-height:10px; background: white; '
-      } else if (rowIndex === 1){
-        return 'line-height:10px; background: white; border: 0'
-      }
-      else
-        return ''
-    },
+
     headerStyle2({rowIndex}) {
       if (rowIndex === 0) {
         return 'border: 1px solid lightgray'
@@ -468,9 +295,7 @@ export default {
       else
         return ''
     },
-    cellStyle(){
-      return 'border: 0'
-    },
+
     cellStyle2(){
       return 'border: 1px solid lightgray; padding: 0'
     },
@@ -478,14 +303,19 @@ export default {
       console.log(tab, event);
     },
     handleSizeChange(val) {
+      //更改每页最大数量
+      this.page = 1;
+      this.pageSize = val;
+      this.fetchData(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
+      //换页
+      this.page = val;
+      this.fetchData(val,this.pageSize)
       console.log(`当前页: ${val}`);
     },
-    handleChange(value) {
-      console.log(value);
-    }
+
   }
 
 }

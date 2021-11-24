@@ -52,7 +52,7 @@
           <p>列表</p>
         </el-col>
         <el-col :span="8" >
-            <el-button class="el-button1" type="success" @click="supAdd">新增</el-button>
+          <el-button class="el-button1" type="success" @click="supAdd">新增</el-button>
         </el-col>
         <el-col :span="8" >
           <el-button class="el-button1" type="success" @click="reflash">刷新</el-button>
@@ -107,7 +107,7 @@
                     width="150px"
                     show-overflow-tooltip>
                   <template slot-scope="scope">
-                    <el-button class="supUpdateButt" type="text" @click="supUpdate">修改信息</el-button>
+                    <el-button class="supUpdateButt" type="text" @click="supUpdate(scope.$index,scope.row)">修改信息</el-button>
                     <el-button type="text" @click="supDel(scope.$index, scope.row)">删除</el-button>
                   </template>
                 </el-table-column>
@@ -115,113 +115,113 @@
             </template>
           </el-tab-pane>
           <el-tab-pane label="信息风采" name="second">
-<!--            <template>-->
-<!--              <el-table-->
-<!--                  class="el-table-list"-->
-<!--                  :data="tableData"-->
-<!--                  :header-cell-style="headerStyle2"-->
-<!--                  :cell-style="cellStyle2"-->
-<!--                  row-style="height:10px"-->
-<!--                  style="width: 100%; font-size: 8px;">-->
-<!--                <el-table-column-->
-<!--                    prop="number"-->
-<!--                    label="序号"-->
-<!--                    width="50px"-->
-<!--                >-->
-<!--                </el-table-column>-->
-<!--                <el-table-column-->
-<!--                    prop="title"-->
-<!--                    label="标题"-->
-<!--                    width="150px"-->
-<!--                    show-overflow-tooltip>-->
-<!--                </el-table-column>-->
-<!--                <el-table-column-->
-<!--                    prop="community"-->
-<!--                    label="所属社区"-->
-<!--                    width="150px"-->
-<!--                    show-overflow-tooltip>-->
-<!--                </el-table-column>-->
-<!--                <el-table-column-->
-<!--                    prop="createTime"-->
-<!--                    label="创建时间"-->
-<!--                    width="150px"-->
-<!--                    show-overflow-tooltip>-->
-<!--                </el-table-column>-->
-<!--                <el-table-column-->
-<!--                    prop="creater"-->
-<!--                    label="创建人"-->
-<!--                    width="150px"-->
-<!--                    show-overflow-tooltip>-->
-<!--                </el-table-column>-->
-<!--                <el-table-column-->
-<!--                    prop="status"-->
-<!--                    label="状态"-->
-<!--                    width="150px"-->
-<!--                    show-overflow-tooltip>-->
-<!--                  <template slot-scope="item">-->
-<!--                    <span :class="item.row.status === '已发布' ? 'yifabu' :-->
-<!--                            (item.row.status === '未审核' || item.row.status === '已驳回' ? 'weishenheyibohui' : 'shenhezhong')">-->
-<!--                      {{item.row.status}}-->
-<!--                    </span>-->
-<!--                  </template>-->
-<!--                </el-table-column>-->
-<!--                <el-table-column-->
-<!--                    prop="action"-->
-<!--                    label="操作"-->
-<!--                    width="150px"-->
-<!--                    show-overflow-tooltip>-->
-<!--                  <template slot-scope="item">-->
-<!--                    <el-button-->
-<!--                        type="text" @click="audit"-->
-<!--                        v-if="item.row.status==='未审核' || item.row.status==='审核中'">-->
-<!--                      审核-->
-<!--                    </el-button>-->
-<!--                    <el-button-->
-<!--                        type="text" @click.native.prevent="clickEventDialog(item.row)">-->
-<!--                      流程信息-->
-<!--                    </el-button>-->
+            <!--            <template>-->
+            <!--              <el-table-->
+            <!--                  class="el-table-list"-->
+            <!--                  :data="tableData"-->
+            <!--                  :header-cell-style="headerStyle2"-->
+            <!--                  :cell-style="cellStyle2"-->
+            <!--                  row-style="height:10px"-->
+            <!--                  style="width: 100%; font-size: 8px;">-->
+            <!--                <el-table-column-->
+            <!--                    prop="number"-->
+            <!--                    label="序号"-->
+            <!--                    width="50px"-->
+            <!--                >-->
+            <!--                </el-table-column>-->
+            <!--                <el-table-column-->
+            <!--                    prop="title"-->
+            <!--                    label="标题"-->
+            <!--                    width="150px"-->
+            <!--                    show-overflow-tooltip>-->
+            <!--                </el-table-column>-->
+            <!--                <el-table-column-->
+            <!--                    prop="community"-->
+            <!--                    label="所属社区"-->
+            <!--                    width="150px"-->
+            <!--                    show-overflow-tooltip>-->
+            <!--                </el-table-column>-->
+            <!--                <el-table-column-->
+            <!--                    prop="createTime"-->
+            <!--                    label="创建时间"-->
+            <!--                    width="150px"-->
+            <!--                    show-overflow-tooltip>-->
+            <!--                </el-table-column>-->
+            <!--                <el-table-column-->
+            <!--                    prop="creater"-->
+            <!--                    label="创建人"-->
+            <!--                    width="150px"-->
+            <!--                    show-overflow-tooltip>-->
+            <!--                </el-table-column>-->
+            <!--                <el-table-column-->
+            <!--                    prop="status"-->
+            <!--                    label="状态"-->
+            <!--                    width="150px"-->
+            <!--                    show-overflow-tooltip>-->
+            <!--                  <template slot-scope="item">-->
+            <!--                    <span :class="item.row.status === '已发布' ? 'yifabu' :-->
+            <!--                            (item.row.status === '未审核' || item.row.status === '已驳回' ? 'weishenheyibohui' : 'shenhezhong')">-->
+            <!--                      {{item.row.status}}-->
+            <!--                    </span>-->
+            <!--                  </template>-->
+            <!--                </el-table-column>-->
+            <!--                <el-table-column-->
+            <!--                    prop="action"-->
+            <!--                    label="操作"-->
+            <!--                    width="150px"-->
+            <!--                    show-overflow-tooltip>-->
+            <!--                  <template slot-scope="item">-->
+            <!--                    <el-button-->
+            <!--                        type="text" @click="audit"-->
+            <!--                        v-if="item.row.status==='未审核' || item.row.status==='审核中'">-->
+            <!--                      审核-->
+            <!--                    </el-button>-->
+            <!--                    <el-button-->
+            <!--                        type="text" @click.native.prevent="clickEventDialog(item.row)">-->
+            <!--                      流程信息-->
+            <!--                    </el-button>-->
 
-<!--                    <el-dialog-->
-<!--                        class="tanchuang"-->
-<!--                        title="流程信息"-->
-<!--                        :visible.sync="dialogVisible"-->
-<!--                        :show-close="false"-->
-<!--                        :append-to-body="true"-->
-<!--                        width="60%">-->
-<!--                      <div>-->
-<!--                        <span>新增人： </span>-->
-<!--                        <span>{{creater}}</span>-->
-<!--                        <br>-->
-<!--                        <span>新增时间： </span>-->
-<!--                        <span>{{createTime}}</span>-->
-<!--                        <br>-->
-<!--                        <br>-->
-<!--                        <span>机审时间： </span>-->
-<!--                        <span>{{machineTime}}</span>-->
-<!--                        <br>-->
-<!--                        <span>机审结果： </span>-->
-<!--                        <span>{{machineRes}}-->
-<!--                          </span>-->
-<!--                        <br>-->
-<!--                        <br>-->
-<!--                        <span>人工审核人： </span>-->
-<!--                        <span>{{artificialPeo}}</span>-->
-<!--                        <br>-->
-<!--                        <span>人工审核时间： </span>-->
-<!--                        <span>{{artificialTime}}</span>-->
-<!--                        <br>-->
-<!--                        <span>人工结果： </span>-->
-<!--                        <span>{{artificialRes}}</span>-->
-<!--                        <br>-->
-<!--                      </div>-->
-<!--                      <span slot="footer" class="dialog-footer">-->
-<!--                        <el-button size="mini" @click="dialogVisible = false">关 闭</el-button>-->
-<!--                      </span>-->
-<!--                    </el-dialog>-->
-<!--                  </template>-->
-<!--                </el-table-column>-->
-<!--              </el-table>-->
-<!--            </template>-->
+            <!--                    <el-dialog-->
+            <!--                        class="tanchuang"-->
+            <!--                        title="流程信息"-->
+            <!--                        :visible.sync="dialogVisible"-->
+            <!--                        :show-close="false"-->
+            <!--                        :append-to-body="true"-->
+            <!--                        width="60%">-->
+            <!--                      <div>-->
+            <!--                        <span>新增人： </span>-->
+            <!--                        <span>{{creater}}</span>-->
+            <!--                        <br>-->
+            <!--                        <span>新增时间： </span>-->
+            <!--                        <span>{{createTime}}</span>-->
+            <!--                        <br>-->
+            <!--                        <br>-->
+            <!--                        <span>机审时间： </span>-->
+            <!--                        <span>{{machineTime}}</span>-->
+            <!--                        <br>-->
+            <!--                        <span>机审结果： </span>-->
+            <!--                        <span>{{machineRes}}-->
+            <!--                          </span>-->
+            <!--                        <br>-->
+            <!--                        <br>-->
+            <!--                        <span>人工审核人： </span>-->
+            <!--                        <span>{{artificialPeo}}</span>-->
+            <!--                        <br>-->
+            <!--                        <span>人工审核时间： </span>-->
+            <!--                        <span>{{artificialTime}}</span>-->
+            <!--                        <br>-->
+            <!--                        <span>人工结果： </span>-->
+            <!--                        <span>{{artificialRes}}</span>-->
+            <!--                        <br>-->
+            <!--                      </div>-->
+            <!--                      <span slot="footer" class="dialog-footer">-->
+            <!--                        <el-button size="mini" @click="dialogVisible = false">关 闭</el-button>-->
+            <!--                      </span>-->
+            <!--                    </el-dialog>-->
+            <!--                  </template>-->
+            <!--                </el-table-column>-->
+            <!--              </el-table>-->
+            <!--            </template>-->
           </el-tab-pane>
           <el-tab-pane label="大屏通知" name="third"></el-tab-pane>
           <el-tab-pane label="大屏风采" name="fourth"></el-tab-pane>
@@ -347,13 +347,37 @@ export default {
       toBeSearched: [],
     }
   },
+  mounted() {
+    this.fetchData(this.page,this.pageSize)
+  },
   methods: {
+    //读表
+    fetchData(page,pageSize){
+      let postData={
+        page: page,
+        pageSize: pageSize
+      };
+      console.log(postData);
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080//supplier/getAll',
+        params: postData
+      }).then(response =>
+      {
+        console.log(response.data.data);
+        this.tableData = response.data.data;
+        this.total=response.data.total;
+      }).catch(error =>
+      {
+        console.log(error);
+      });
+    },
     reflash(){
       //刷新
       this.$router.go(0);
     },
     supQuery(){
-    //  查询
+      //  查询
       let postData = this.qs.stringify({
         supName: this.search
       });
@@ -370,50 +394,44 @@ export default {
         console.log(error);
       });
     },
-    supUpdate(){
-    //  修改，跳转到修改页面
+    supUpdate(index, row){
+      //  修改，跳转到修改页面
+      console.log(index,row)
+      sessionStorage.setItem('eventConfigId',row.eventConfigId);
+      sessionStorage.setItem('eventName',row.eventName);
+      sessionStorage.setItem('eventLevel',row.eventLevel);
+      sessionStorage.setItem('deviceTypeName',row.deviceTypeName);
+      sessionStorage.setItem('notificationDescription',row.notificationDescription);
+      sessionStorage.setItem('alarmName',row.alarmName);
       this.$router.replace({path: '/supplierList/inform'})
     },
     supAdd(){
-    //  新增，跳转到新增页面
-      this.$router.replace({path: '/supplierList/inform'})
+      //  新增，跳转到新增页面
+      this.$router.replace({path: '/supplierList/supplierAdd'})
     },
     supDel(index, row){
-    //  删除
+      //  删除
       console.log(index, row);
       this.$confirm('删除操作, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let postData = this.qs.stringify({
+        let postData = {
           supId: row.supId,
-        });
+        };
         this.axios({
           method: 'post',
-          url:'/delete',
-          data:postData
+          url:'http://localhost:8080/supplier/delete',
+          params:postData
         }).then(response =>
         {
-          this.getPages();
-          this.currentPage = 1;
-          this.axios.post('/page').then(response =>
-          {
-            this.tableData = response.data;
-          }).catch(error =>
-          {
-            console.log(error);
-          });
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
           console.log(response);
+          this.reflash();
         }).catch(error =>
         {
           console.log(error);
         });
-
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -430,17 +448,17 @@ export default {
         console.log(error);
       });
     },
-    clickEventDialog(row){
-      this.dialogVisible = true;
-      console.log(row.creater)
-      this.creater=row.creater
-      this.createTime=row.createTime
-      this.machineTime=row.machineTime
-      this.machineRes=row.machineRes
-      this.artificialPeo=row.artificialPeo
-      this.artificialTime=row.artificialTime
-      this.artificialRes=row.artificialRes
-    },
+    // clickEventDialog(row){
+    //   this.dialogVisible = true;
+    //   console.log(row.creater)
+    //   this.creater=row.creater
+    //   this.createTime=row.createTime
+    //   this.machineTime=row.machineTime
+    //   this.machineRes=row.machineRes
+    //   this.artificialPeo=row.artificialPeo
+    //   this.artificialTime=row.artificialTime
+    //   this.artificialRes=row.artificialRes
+    // },
     resetForm() {
       this.inputTitle='';
       this.inputState='';
@@ -487,9 +505,16 @@ export default {
       console.log(tab, event);
     },
     handleSizeChange(val) {
+      //更改每页最大数量
+      this.page = 1;
+      this.pageSize = val;
+      this.fetchData(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
+      //换页
+      this.page = val;
+      this.fetchData(val,this.pageSize)
       console.log(`当前页: ${val}`);
     },
     handleChange(value) {

@@ -51,6 +51,7 @@
         <el-menu-item index="/equipmentList"><i class="el-icon-data-analysis"></i>设备列表</el-menu-item>
         <el-menu-item index="/alertList"><i class="el-icon-data-analysis"></i>告警列表</el-menu-item>
         <el-menu-item index="/eventConfList"><i class="el-icon-data-analysis"></i>事件配置列表</el-menu-item>
+        <el-menu-item index="/eventInfo"><i class="el-icon-data-analysis"></i>事件监控列表</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
   </el-menu>

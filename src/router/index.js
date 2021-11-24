@@ -15,13 +15,24 @@ import AuditingDetail from '../views/AuditingDetail.vue'
 
 
 import Inform from "../views/InformationCheck"
-import SupplierList from "../views/Supplier.vue"
+
 import EquipmentTypeList from "../views/EquipmentType.vue"
+import EquipmentTypeAdd from "../views/EquipmentTypeAdd.vue"
+import EquipmentTypeUpdate from "../views/EquipmentTypeUpdate.vue"
 import EquipmentList from "../views/Equipment.vue"
 import AlertList from "../views/Alert.vue"
+import AlertAdd from "../views/AlertAdd.vue"
+import AlertUpdate from "../views/AlertUpdate.vue"
 import EventConfList from "../views/EventConfiguration.vue"
 import EventConfAdd from "../views/EventConfAdd.vue";
 import EventConfUpdate from "../views/EventConfUpdate.vue";
+import EventInfo from "../views/EventInfo.vue";
+import EventInfoDetail from "../views/EventInfoDetail.vue";
+import BigPingF from "../views/BigPingF.vue";
+
+import SupplierList from "../views/Supplier.vue"
+import SupplierAdd from "../views/SupplierAdd.vue";
+import SupplierUpdate from "../views/SupplierUpdate.vue";
 
   Vue.use(VueRouter)
 
@@ -97,9 +108,29 @@ const routes = [
     component: SupplierList
   },
   {
+    path: '/supplierList/supplierAdd',
+    name: 'SupplierAdd',
+    component: SupplierAdd
+  },
+  {
+    path: '/supplierList/supplierUpdate',
+    name: 'SupplierUpdate',
+    component: SupplierUpdate
+  },
+  {
     path:'/equipmentTypeList',
     name:'EquipmentTypeList',
     component: EquipmentTypeList
+  },
+  {
+    path:'/equipmentTypeList/equipmentTypeAdd',
+    name:'EquipmentTypeAdd',
+    component: EquipmentTypeAdd
+  },
+  {
+    path:'/equipmentTypeList/equipmentTypeUpdate',
+    name:'EquipmentTypeUpdate',
+    component: EquipmentTypeUpdate
   },
   {
     path:'/equipmentList',
@@ -110,6 +141,16 @@ const routes = [
     path:'/alertList',
     name:'AlertList',
     component: AlertList
+  },
+  {
+    path:'/alertList/alertAdd',
+    name:'AlertAdd',
+    component: AlertAdd
+  },
+  {
+    path:'/alertList/alertUpdate',
+    name:'AlertUpdate',
+    component: AlertUpdate
   },
   {
     path:'/eventConfList',
@@ -125,6 +166,21 @@ const routes = [
     path:'/eventConfList/eventConfUpdate',
     name:'EventConfUpdate',
     component: EventConfUpdate
+  },
+  {
+    path:'/eventInfo',
+    name:'EventInfo',
+    component: EventInfo
+  },
+  {
+    path:'/eventInfo/eventInfoDetail',
+    name:'EventInfoDetail',
+    component: EventInfoDetail
+  },
+  {
+    path:'/bigPingF',
+    name:'BigPingF',
+    component: BigPingF
   }
 ]
 
