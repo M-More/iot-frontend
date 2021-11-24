@@ -33,155 +33,172 @@ import BigPingF from "../views/BigPingF.vue";
 import SupplierList from "../views/Supplier.vue"
 import SupplierAdd from "../views/SupplierAdd.vue";
 import SupplierUpdate from "../views/SupplierUpdate.vue";
+import login from "../views/login";
+import Welcome from "../views/Welcome"
+
 
   Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/home',
     name: 'Home',
-    component: Home
+    component: Home,
+    children:[
+      {
+        path: '',
+        name: 'welcome',
+        component: Welcome
+      },
+      {
+        path: 'auditing',
+        name: 'Auditing',
+        component: Auditing
+      },
+      {
+        path: 'table',
+        name: 'Table',
+        component: Table
+      },
+      {
+        path: 'form',
+        name: 'Form',
+        component: Form
+      },
+      {
+        path:'eventlist',
+        name: 'EventList',
+        component: EventList
+      },
+      {
+        path:'carousel',
+        name: 'Carousel',
+        component: Carousel
+      },
+      {
+        path:'steps',
+        name:'Steps',
+        component: Steps
+      },
+      {
+        path:'addfengcai',
+        name:'AddFengcai',
+        component: AddFengcai
+      },
+      {
+        path:'noticeboard',
+        name:'NoticeBoard',
+        component: NoticeBoard
+      },
+      {
+        path:'fengcaitable',
+        name:'FengcaiTable',
+        component: FengcaiTable
+      },
+      {
+        path:'fengcaidetail',
+        name:'FengcaiDetail',
+        component: FengcaiDetail
+      },
+      {
+        path:'auditingdetail',
+        name:'AuditingDetail',
+        component: AuditingDetail
+      },
+      {
+        path:'supplierList/inform',
+        name:'Inform',
+        component: Inform
+      },
+      {
+        path:'supplierList',
+        name:'SupplierList',
+        component: SupplierList
+      },
+      {
+        path: 'supplierList/supplierAdd',
+        name: 'SupplierAdd',
+        component: SupplierAdd
+      },
+      {
+        path: 'supplierList/supplierUpdate',
+        name: 'SupplierUpdate',
+        component: SupplierUpdate
+      },
+      {
+        path:'equipmentTypeList',
+        name:'EquipmentTypeList',
+        component: EquipmentTypeList
+      },
+      {
+        path:'equipmentTypeList/equipmentTypeAdd',
+        name:'EquipmentTypeAdd',
+        component: EquipmentTypeAdd
+      },
+      {
+        path:'equipmentTypeList/equipmentTypeUpdate',
+        name:'EquipmentTypeUpdate',
+        component: EquipmentTypeUpdate
+      },
+      {
+        path:'equipmentList',
+        name:'EquipmentList',
+        component: EquipmentList
+      },
+      {
+        path:'alertList',
+        name:'AlertList',
+        component: AlertList
+      },
+      {
+        path:'alertList/alertAdd',
+        name:'AlertAdd',
+        component: AlertAdd
+      },
+      {
+        path:'alertList/alertUpdate',
+        name:'AlertUpdate',
+        component: AlertUpdate
+      },
+      {
+        path:'eventConfList',
+        name:'EventConfList',
+        component: EventConfList
+      },
+      {
+        path:'eventConfList/eventConfAdd',
+        name:'EventConfAdd',
+        component: EventConfAdd
+      },
+      {
+        path:'eventConfList/eventConfUpdate',
+        name:'EventConfUpdate',
+        component: EventConfUpdate
+      },
+      {
+        path:'eventInfo',
+        name:'EventInfo',
+        component: EventInfo
+      },
+      {
+        path:'eventInfo/eventInfoDetail',
+        name:'EventInfoDetail',
+        component: EventInfoDetail
+      },
+      {
+        path:'bigPingF',
+        name:'BigPingF',
+        component: BigPingF
+      }
+    ]
   },
   {
-    path: '/auditing',
-    name: 'Auditing',
-    component: Auditing
-  },
-  {
-    path: '/table',
-    name: 'Table',
-    component: Table
-  },
-  {
-    path: '/form',
-    name: 'Form',
-    component: Form
-  },
-  {
-    path:'/eventlist',
-    name: 'EventList',
-    component: EventList
-  },
-  {
-    path:'/carousel',
-    name: 'Carousel',
-    component: Carousel
-  },
-  {
-    path:'/steps',
-    name:'Steps',
-    component: Steps
-  },
-  {
-    path:'/addfengcai',
-    name:'AddFengcai',
-    component: AddFengcai
-  },
-  {
-    path:'/noticeboard',
-    name:'NoticeBoard',
-    component: NoticeBoard
-  },
-  {
-    path:'/fengcaitable',
-    name:'FengcaiTable',
-    component: FengcaiTable
-  },
-  {
-    path:'/fengcaidetail',
-    name:'FengcaiDetail',
-    component: FengcaiDetail
-  },
-  {
-    path:'/auditingdetail',
-    name:'AuditingDetail',
-    component: AuditingDetail
-  },
-  {
-    path:'/supplierList/inform',
-    name:'Inform',
-    component: Inform
-  },
-  {
-    path:'/supplierList',
-    name:'SupplierList',
-    component: SupplierList
-  },
-  {
-    path: '/supplierList/supplierAdd',
-    name: 'SupplierAdd',
-    component: SupplierAdd
-  },
-  {
-    path: '/supplierList/supplierUpdate',
-    name: 'SupplierUpdate',
-    component: SupplierUpdate
-  },
-  {
-    path:'/equipmentTypeList',
-    name:'EquipmentTypeList',
-    component: EquipmentTypeList
-  },
-  {
-    path:'/equipmentTypeList/equipmentTypeAdd',
-    name:'EquipmentTypeAdd',
-    component: EquipmentTypeAdd
-  },
-  {
-    path:'/equipmentTypeList/equipmentTypeUpdate',
-    name:'EquipmentTypeUpdate',
-    component: EquipmentTypeUpdate
-  },
-  {
-    path:'/equipmentList',
-    name:'EquipmentList',
-    component: EquipmentList
-  },
-  {
-    path:'/alertList',
-    name:'AlertList',
-    component: AlertList
-  },
-  {
-    path:'/alertList/alertAdd',
-    name:'AlertAdd',
-    component: AlertAdd
-  },
-  {
-    path:'/alertList/alertUpdate',
-    name:'AlertUpdate',
-    component: AlertUpdate
-  },
-  {
-    path:'/eventConfList',
-    name:'EventConfList',
-    component: EventConfList
-  },
-  {
-    path:'/eventConfList/eventConfAdd',
-    name:'EventConfAdd',
-    component: EventConfAdd
-  },
-  {
-    path:'/eventConfList/eventConfUpdate',
-    name:'EventConfUpdate',
-    component: EventConfUpdate
-  },
-  {
-    path:'/eventInfo',
-    name:'EventInfo',
-    component: EventInfo
-  },
-  {
-    path:'/eventInfo/eventInfoDetail',
-    name:'EventInfoDetail',
-    component: EventInfoDetail
-  },
-  {
-    path:'/bigPingF',
-    name:'BigPingF',
-    component: BigPingF
+    path: '/login',
+    name:'Login',
+    component: login
   }
+
+
 ]
 
 const router = new VueRouter({
@@ -189,5 +206,20 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+router.beforeEach((to, from, next) => {
+  if (to.path === '/') {
+    next({path:'/login'})
+  }
+  if (to.path === '/login') {
+    next()
+  }
+  if (to.path.substr(0,5) === '/home' &&sessionStorage.getItem("userAccount")!=null) {
+    next()
+  }
+  if (to.path.substr(0,5) === '/home' &&sessionStorage.getItem("userAccount")==null) {
+    next({path:'/login'})
+  }
+})
+
 
 export default router
