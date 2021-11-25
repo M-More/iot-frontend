@@ -21,7 +21,7 @@
         <el-col :span="6">
           <div class="div-1" id="div-1-eveDealed">
             <div class="div-2">
-              {{this.total}}
+              {{this.eventDone}}
               <p>已处理事件</p>
             </div>
           </div>
@@ -29,7 +29,7 @@
         <el-col :span="6">
           <div class="div-1" id="div-1-eveDealing">
             <div class="div-2">
-              {{this.total}}
+              {{this.eventDoing}}
               <p>处理中事件</p>
             </div>
           </div>
@@ -37,7 +37,7 @@
         <el-col :span="6">
           <div class="div-1" id="div-1-eveUndealed">
             <div class="div-2">
-              {{this.total}}
+              {{this.eventToDo}}
               <p>未处理事件</p>
             </div>
           </div>
@@ -84,9 +84,7 @@
     <!--下方列表信息部分-->
     <div class="detailList">
       <el-row>
-        <p>事件列表
-          <el-button  type="success" @click="eveConfAdd" style="float:right; margin-right: 18px">新增</el-button>
-        </p>
+        <p>事件列表</p>
       </el-row>
 
       <div>
@@ -129,6 +127,11 @@
                   label="事件状态"
                   show-overflow-tooltip>
               </el-table-column>
+              <el-table-column
+                  prop="eventLevel"
+                  label="事件等级"
+                  show-overflow-tooltip>
+              </el-table-column>
 
               <el-table-column
                   prop="action"
@@ -137,7 +140,6 @@
                   show-overflow-tooltip>
                 <template slot-scope="scope">
                   <el-button class="eventInfoDetailButt" type="text" @click="eventInfoDetail(scope.$index, scope.row)">查看详情</el-button>
-                  <el-button type="text" @click="eveConfDel(scope.$index, scope.row)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -177,6 +179,7 @@ export default {
       eventInfoResource:"",
       alarmFrequency:"",
       eventInfoDescription:"",
+      eventLevel:'',
       deviceTypeName:"",
       deviceStatus:"",
 
@@ -192,6 +195,10 @@ export default {
       activeName: 'first',
 
       eventSum:'',
+      eventDone:'',
+      eventDoing:'',
+      eventToDo:'',
+
 
       isSearch: true,
       toBeSearched: [],
@@ -215,7 +222,7 @@ export default {
         params: postData
       }).then(response =>
       {
-        console.log(typeof response.data.data[0].createTime);
+        console.log(response.data.data[0]);
         this.tableData = response.data.data;
         this.total=response.data.total;
         // this.eventSum=response.data.total;
@@ -224,8 +231,21 @@ export default {
         console.log(error);
       });
     },
+    //读表头（xx数量等）
     fetchTableTitle(){
-
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/eventInfo/getEventStat',
+      }).then(response =>
+      {
+        this.eventSum=response.data.total;
+        this.eventDone=response.data.done;
+        this.eventDoing=response.data.doing;
+        this.eventToDo=response.data.todo;
+      }).catch(error =>
+      {
+        console.log(error);
+      });
     },
 
     reflash(){
@@ -261,48 +281,13 @@ export default {
       sessionStorage.setItem('alarmFrequency',row.alarmFrequency);
       sessionStorage.setItem('eventInfoOccurenceTime',row.eventInfoOccurenceTime);
       sessionStorage.setItem('eventInfoDescription',row.eventInfoDescription);
+      sessionStorage.setItem('eventLevel',row.eventLevel);
 
       sessionStorage.setItem('deviceNumber',row.deviceNumber);
       sessionStorage.setItem('deviceTypeName',row.deviceTypeName);
       sessionStorage.setItem('deviceStatus',row.deviceStatus);
       sessionStorage.setItem('addressDescription',row.addressDescription);
-      this.$router.replace({path: '/eventInfo/eventInfoDetail'})
-    },
-    eveConfAdd(){
-      //  新增，跳转到新增页面
-      // this.$router.replace({path: '/eventConfList/eventConfAdd'})
-    },
-    eveConfDel(index, row){
-      //  删除
-      console.log(index,row);
-      // this.$confirm('删除操作, 是否继续?', '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   let postData = {
-      //     eventConfigId: row.eventConfigId,
-      //   };
-      //   console.log(postData);
-      //   this.axios({
-      //     method: 'post',
-      //     url:'http://localhost:8080/eventConfig/delete',
-      //     params:postData
-      //   }).then(response =>
-      //   {
-      //     console.log(response);
-      //     this.reflash();
-      //   }).catch(error =>
-      //   {
-      //     console.log(error);
-      //   });
-      //
-      // }).catch(() => {
-      //   this.$message({
-      //     type: 'info',
-      //     message: '已取消删除'
-      //   });
-      // });
+      this.$router.replace({path: '/home/eventInfo/eventInfoDetail'})
     },
 
     resetForm() {
@@ -368,17 +353,6 @@ export default {
     handleChange(value) {
       console.log(value);
     },
-    //时间戳->String
-    formatDate(now) {
-      var year = now.getFullYear();
-      var month = now.getMonth() + 1;
-      var date = now.getDate();
-      var hour = now.getHours();
-      var minute = now.getMinutes();
-      var second = now.getSeconds();
-      return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
-    }
-
   }
 }
 </script>

@@ -8,9 +8,9 @@
       <div class="welcome-name">
         <el-row :gutter="10">
           <el-col :span="7">
-            <el-button style="text-align: right" type="success" @click="changeHtml">跳转</el-button>
+            <el-button style="text-align: center" type="success" @click="changeHtml">跳转</el-button>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <p class="welcome-name-content">欢迎登录：</p>
           </el-col>
           <el-col :span="10">
