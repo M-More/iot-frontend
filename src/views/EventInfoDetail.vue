@@ -1,6 +1,6 @@
 <template>
   <div class="eveInfoDetail">
-    <!--上方事件信息部分-->
+    <!--事件信息部分-->
     <el-row class="el-row2">
       <p>事件信息</p>
       <el-col :span="24">
@@ -14,10 +14,10 @@
               <el-col style="font-weight: bolder" :span="8" >事件状态</el-col>
             </el-row>
 
-            <el-row class="eveConfQuire-row-2">
+            <el-row class="eveConfQuire-row-2" :gutter="20">
               <!--查询内容输入-->
-              <el-col :span="8">
-                <el-form-item style="margin-right: 20px">
+              <el-col :span="8" >
+                <el-form-item>
                   <el-input v-model="eventInfoId" :disabled="readonly"></el-input>
                 </el-form-item>
               </el-col>
@@ -40,10 +40,10 @@
               <el-col style="font-weight: bolder" :span="8" >事件发生时间</el-col>
             </el-row>
 
-            <el-row class="eveConfQuire-row-2">
+            <el-row class="eveConfQuire-row-2" :gutter="20">
               <!--查询内容输入-->
               <el-col :span="8">
-                <el-form-item style="margin-right: 20px">
+                <el-form-item>
                   <el-input v-model="eventInfoResource" :disabled="readonly"></el-input>
                 </el-form-item>
               </el-col>
@@ -78,7 +78,7 @@
       </el-col>
     </el-row>
 
-    <!--下方设备信息部分-->
+    <!--设备信息部分-->
     <div class="detailList" id="devList">
       <p>设备列表</p>
       <div>
@@ -140,6 +140,7 @@
 <!--      </div>-->
     </div>
 
+    <!--事件日志部分-->
     <div class="detailList" id="InfoDia">
       <!--事件日志-->
         <p>事件日志</p>
@@ -197,9 +198,25 @@
           <!--事件处理状态绑定是否显示-->
           <el-button type="success" v-if="orderBuVis" @click="eveOrder">接单</el-button>
         </el-col>
-        <el-col style="font-weight: bolder;text-align: right" :span="11">
-          <!--事件处理状态绑定是否显示-->
-          <el-button type="success" v-if="dealBuVis" @click="eveDeal">处理</el-button>
+        <el-col class="div-eveDeal" style="font-weight: bolder;text-align: right" :span="11">
+          <div>
+            <!--事件处理状态绑定是否显示-->
+            <el-button type="success" v-if="dealBuVis" @click="eveDeal">处理</el-button>
+
+            <el-dialog
+                :visible.sync="dialogVisible"
+                width="30%">
+              <el-input style="width: 100%"
+                        @input="change($event)"
+                        type="textarea"
+                        placeholder="请输入处理意见"
+                        v-model="dealComment"></el-input>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+              </span>
+            </el-dialog>
+          </div>
         </el-col>
         <el-col style="font-weight: bolder;text-align: left" :span="8" >
             <el-button type="button" @click="back">返回</el-button>
@@ -242,7 +259,9 @@ export default {
       total: 20,
       pageSize: 10,
       page: 1,
-      activeName: 'first',
+      dialogVisible: false,
+
+      dealComment:'',
     }
   },
   mounted() {
@@ -305,6 +324,7 @@ export default {
       }).then(response=>
       {
         console.log(response);
+        this.$router.replace({path: '/home/eventInfo'})
       }).catch(error =>
       {
         console.log(error);
@@ -313,6 +333,14 @@ export default {
     },
     eveDeal(){
       //打开处理弹窗（输入处理意见）
+      this.dialogVisible=true;
+
+    },
+    change(e){
+      // 渲染太深input无法输入：
+      // 强制刷新可解决
+      console.log(e);
+      this.$forceUpdate();
     },
 
     headerStyle({rowIndex}) {
@@ -351,7 +379,7 @@ export default {
       console.log(`当前页: ${val}`);
     },
     back() {
-      this.$router.replace('/eventInfo')
+      this.$router.replace('/home/eventInfo')
     }
   }
 }
@@ -367,28 +395,26 @@ export default {
   text-align: left;
   line-height: 53px;
 }
-/*右侧页面整体样式*/
-.eveConfList .el-dialog__title {
+/*弹窗整体样式*/
+.eveInfoDetail .el-dialog__title {
   text-align: left;
   font-size: 20px;
 }
-.eveConfList .el-dialog__header {
+.eveInfoDetail .el-dialog__header {
   height: 10px;
   padding: 20px 20px 30px;
   border-bottom: solid 1px #F0EEEE;
+  text-align: left;
 }
-.eveConfList .el-dialog__footer {
+.eveInfoDetail .el-dialog__footer {
   height: 50px;
   border-top: solid 1px #F0EEEE;
 }
-.eveConfList .el-dialog__body {
+.eveInfoDetail .el-dialog__body {
   height: 300px;
   font-size: 14px;
 }
-.eveConfList .el-row{
-  line-height: 40px !important;
-}
-/*查询部分*/
+/*事件信息部分*/
 .el-row2{
   width: 100%;
   padding: 10px 10px;
@@ -404,7 +430,7 @@ export default {
   font-size: 18px;
   border-bottom: 1px solid lightgray;
 }
-/*查询不分内容：字段、信息、按钮*/
+/*事件信息部分内容：字段、信息、按钮*/
 .eveConfQuire-row-1{
   text-align: left !important;
   padding-bottom: -8px;
@@ -414,10 +440,11 @@ export default {
 .eveConfQuire-row-2{
   padding: 10px;
 }
-
+/*设备列表*/
 #devList{
   height: 200px;
 }
+/*（设备、日志）列表样式*/
 .detailList{
   height: 450px;
   padding-top: 5px;
@@ -433,6 +460,7 @@ export default {
   line-height: 50px;
   font-size: 18px;
 }
+/*分页*/
 .block{
   background: white;
   height: 20px;

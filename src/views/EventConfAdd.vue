@@ -321,7 +321,7 @@ export default {
             eventLevel: this.form.eventLevel,
             deviceTypeName: this.form.deviceTypeName,
             alarmName: this.form.alarmName.join(','),
-            createUser:"fzn"
+            createUser:sessionStorage.getItem('userAccount')
           };
           console.log(postData)
           this.axios({
@@ -344,7 +344,7 @@ export default {
           });
 
           // alert('保存成功！');
-          this.$router.replace('/eventConfList');
+          this.$router.replace('/home/eventConfList');
         } else {
           console.log('error submit!!');
           return false;
@@ -352,7 +352,7 @@ export default {
       });
     },
     back() {
-      this.$router.replace('/eventConfList')
+      this.$router.replace('/home/eventConfList')
     }
   }
 }

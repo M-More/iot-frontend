@@ -207,11 +207,11 @@ export default {
       sessionStorage.setItem('deviceTypeName',row.deviceTypeName);
       sessionStorage.setItem('notificationDescription',row.notificationDescription);
       sessionStorage.setItem('alarmName',row.alarmName);
-      this.$router.replace({path: '/eventConfList/eventConfUpdate'})
+      this.$router.replace({path: '/home/eventConfList/eventConfUpdate'})
     },
     //  新增，跳转到新增页面
     eveConfAdd(){
-      this.$router.replace({path: '/eventConfList/eventConfAdd'})
+      this.$router.replace({path: '/home/eventConfList/eventConfAdd'})
     },
     //  删除
     eveConfDel(index, row){

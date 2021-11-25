@@ -152,7 +152,7 @@ export default {
 
       alert('保存成功！');
       console.log(postData.alarmName);
-      this.$router.replace('/eventConfList');
+      this.$router.replace('/home/eventConfList');
     },
     selectDevName(){
       let postData={
@@ -182,7 +182,7 @@ export default {
       });
     },
     back(){
-      this.$router.replace('/eventConfList')
+      this.$router.replace('/home/eventConfList')
     }
   }
 }
