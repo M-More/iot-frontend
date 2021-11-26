@@ -97,20 +97,23 @@
               </el-table>
             </template>
         </el-tabs>
+
+
       </div>
 
-      <!--分页 待修改-->
+      <!--分页-->
       <div class="block">
         <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="page"
-            :page-sizes="[1,2,3, 10, 20, 50]"
+            :page-sizes="[10, 20, 50]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total=this.total>
         </el-pagination>
       </div>
+
     </div>
   </div>
 </template>
@@ -134,7 +137,7 @@ export default {
       search: '',
       disablePage: false,
       total: 20,
-      pageSize: 3,
+      pageSize: 10,
       page: 1,
 
       indexTable: [{}],
@@ -182,17 +185,23 @@ export default {
     },
     eveConfQuery(){
       //  查询
-      let postData = this.qs.stringify({
-        eveConfName: this.search
-      });
+      let postData = {
+        eventName:this.inputTitle,
+        eventLevel: this.inputLevel,
+        page:this.page,
+        pageSize:this.pageSize,
+      };
+      console.log(postData)
       this.axios({
-        method: 'post',
-        url: '/supplierList',
-        data: postData
+        method: 'get',
+        url: 'http://localhost:8080/eventConfig/getAll',
+        params: postData
       }).then(response =>
       {
-        this.tableData = response.data;
-        this.disablePage = true;
+        this.tableData = response.data.data;
+        this.total=response.data.total
+        console.log(response.data);
+        console.log("查询成功");
       }).catch(error =>
       {
         console.log(error);
@@ -315,13 +324,14 @@ export default {
       //更改每页最大数量
       this.page = 1;
       this.pageSize = val;
-      this.fetchData(this.page,this.pageSize)
+
+      this.eveConfQuery(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       //换页
       this.page = val;
-      this.fetchData(val,this.pageSize)
+      this.eveConfQuery(val,this.pageSize)
       console.log(`当前页: ${val}`);
     },
     handleChange(value) {
@@ -407,7 +417,7 @@ export default {
 }
 .block{
   background: white;
-  height: 20px;
+  height: 40px;
   padding-top: 30px;
   padding-right: 10px;
   /*padding-bottom: 10px;*/

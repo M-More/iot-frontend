@@ -117,8 +117,8 @@
                   label="操作"
                   align="center"
                   show-overflow-tooltip>
-                <template slot-scope="scope">
-                  <el-button class="eventInfoDetailButt" type="success" @click="eventInfoDetail(scope.$index, scope.row)">查看详情</el-button>
+                <template>
+                  <el-button class="eventInfoDetailButt" type="success" @click="deviceInfoDetail">查看详情</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -126,18 +126,6 @@
         </el-tabs>
       </div>
 
-      <!--分页-->
-<!--      <div class="block">-->
-<!--        <el-pagination-->
-<!--            @size-change="handleSizeChange"-->
-<!--            @current-change="handleCurrentChange"-->
-<!--            :current-page="page"-->
-<!--            :page-sizes="[1,2,3, 10, 20, 50]"-->
-<!--            :page-size="pageSize"-->
-<!--            layout="total, sizes, prev, pager, next, jumper"-->
-<!--            :total=this.total>-->
-<!--        </el-pagination>-->
-<!--      </div>-->
     </div>
 
     <!--事件日志部分-->
@@ -149,28 +137,28 @@
             <template>
               <el-table
                   class="el-table-list"
-                  :data="tableData"
+                  :data="logTableData"
                   :header-cell-style="headerStyle2"
                   :cell-style="cellStyle2"
                   row-style="height:10px"
                   style="width: 100%; font-size: 8px;">
                 <el-table-column
-                    prop="eveDiaDate"
+                    prop="date"
                     label="日期"
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="eveDiaSta"
+                    prop="processStatus"
                     label="状态"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
-                    prop="eveDiaPer"
+                    prop="staff"
                     label="人员"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
-                    prop="eveDiaOpt"
+                    prop="action"
                     label="操作"
                     show-overflow-tooltip>
                 </el-table-column>
@@ -179,26 +167,19 @@
             </template>
           </el-tabs>
         </div>
-      <!--分页-->
-      <div class="block">
-        <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="page"
-            :page-sizes="[1,2,3, 10, 20, 50]"
-            :page-size="pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total=this.total>
-        </el-pagination>
-      </div>
 
+      <!--按钮-->
       <el-row class="eveConfQuire-row-1" :gutter="10">
-        <!--查询字段-->
-        <el-col style="font-weight: bolder;text-align: right" :span="11">
+        <el-col style="font-weight: bolder;text-align: right" :span="11" >
+          <el-button type="button" @click="back">返回</el-button>
+        </el-col>
+
+        <el-col style="font-weight: bolder;text-align: left" :span="8">
           <!--事件处理状态绑定是否显示-->
           <el-button type="success" v-if="orderBuVis" @click="eveOrder">接单</el-button>
         </el-col>
-        <el-col class="div-eveDeal" style="font-weight: bolder;text-align: right" :span="11">
+
+        <el-col class="div-eveDeal" style="font-weight: bolder;text-align: left" :span="8">
           <div>
             <!--事件处理状态绑定是否显示-->
             <el-button type="success" v-if="dealBuVis" @click="eveDeal">处理</el-button>
@@ -213,14 +194,12 @@
                         v-model="dealComment"></el-input>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                <el-button type="primary" @click="submitOp">确 定</el-button>
               </span>
             </el-dialog>
           </div>
         </el-col>
-        <el-col style="font-weight: bolder;text-align: left" :span="8" >
-            <el-button type="button" @click="back">返回</el-button>
-        </el-col>
+
       </el-row>
     </div>
 
@@ -251,10 +230,17 @@ export default {
       eveDiaPer:"",
       eveDiaOpt:"",
 
+      date:"",
+      processStatus:"",
+      staff:"",
+      action:"",
+
       orderBuVis:false,
       dealBuVis:false,
+      dealBuAble:true,
       readonly: true,
       tableData: [],
+      logTableData:[],
 
       total: 20,
       pageSize: 10,
@@ -266,6 +252,7 @@ export default {
   },
   mounted() {
     this.loadData()
+    this.fetchLog()
   },
   methods: {
     loadData(){
@@ -274,7 +261,7 @@ export default {
       this.eventInfoStatus=sessionStorage.getItem('eventInfoStatus')
       this.eventInfoResource=sessionStorage.getItem('eventInfoResource')
       this.alarmFrequency=sessionStorage.getItem('alarmFrequency')
-      this.eventInfoOccurTime=sessionStorage.getItem('eventInfoOccurTime')
+      this.eventInfoOccurTime=sessionStorage.getItem('eventInfoOccurenceTime')
       this.eventInfoDescription=sessionStorage.getItem('eventInfoDescription')
       this.deviceNumber=sessionStorage.getItem('deviceNumber')
       this.deviceTypeName=sessionStorage.getItem('deviceTypeName')
@@ -285,6 +272,7 @@ export default {
         deviceStatus:this.deviceStatus,
         addressDescription:this.addressDescription
       }
+      console.log("deviceNumber："+this.alarmFrequency)
       let Table=[]
       Table.push(tableData1)
       this.tableData=Table
@@ -298,9 +286,10 @@ export default {
         console.log("未处理")
       }else if(this.eventInfoStatus=="处理中"){
         // 状态是处理中且当前用户（网页）与数据库中UpdateUser一致
-        // 隐藏接单，显示处理
-        this.orderBuVis=false
-        this.dealBuVis=true
+        if(sessionStorage.getItem('userName')==sessionStorage.getItem('updateUser')){
+          this.orderBuVis=false
+          this.dealBuVis=true
+        }
       }
       else{
         // 状态是已处理
@@ -308,14 +297,45 @@ export default {
         this.dealBuVis=false
         console.log("已处理")
       }
+      console.log(sessionStorage.getItem('userName'))
+      console.log(sessionStorage.getItem('updateUser'))
     },
+    //查看设备详情
+    deviceInfoDetail(){
+      this.$router.replace({path: '/home/eventInfo/eventInfoDetail/eventInfoDeviceDetail'})
+    },
+    fetchLog(){
+      let postData={
+        eventInfoId:this.eventInfoId
+      }
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/eventInfo/getLog',
+        params: postData
+      }).then(response =>
+      {
+        let tableTemp=response.data;
+        for(let i=0;i<tableTemp.length;i++){
+          let yearStr=tableTemp[i].date.slice(0,10);
+          let timeStr=tableTemp[i].date.slice(11,19);
+          tableTemp[i].date=yearStr+' '+timeStr;
+        }
+        console.log(tableTemp);
+        this.logTableData = tableTemp;
+
+      }).catch(error =>
+      {
+        console.log(error);
+      });
+    },
+    //接单点击方法
     eveOrder(){
-      //接单点击方法
       this.eventInfoStatus="处理中";
       let postData={
         eventInfoId:this.eventInfoId,
-        updateUser:'Fzn',
+        updateUser:sessionStorage.getItem('userName'),
         eventInfoStatus:this.eventInfoStatus,
+        deviceStatus:"异常"
       };
       this.axios({
         method: 'post',
@@ -329,16 +349,40 @@ export default {
       {
         console.log(error);
       });
-
     },
+    //打开处理弹窗（输入处理意见）
     eveDeal(){
-      //打开处理弹窗（输入处理意见）
       this.dialogVisible=true;
+    },
+    //提交处理意见
+    submitOp(){
+      let postData={
+        opinion:this.dealComment,
+        eventInfoId:sessionStorage.getItem('eventInfoId'),
+        updateUser:sessionStorage.getItem('userName'),
+        eventInfoStatus:"已处理",
+        deviceStatus:"正常",
+        deviceNumber:this.deviceNumber
+      };
+      this.axios({
+        method: 'post',
+        url:'http://localhost:8080/eventInfo/update',
+        params:postData
+      }).then(response=>
+      {
+        console.log(postData);
+        console.log(response);
+        this.dialogVisible=false;
+        this.$router.replace({path: '/home/eventInfo'})
+      }).catch(error =>
+      {
+        console.log(error);
+      });
 
     },
+    // 渲染太深input无法输入：
+    // 强制刷新可解决
     change(e){
-      // 渲染太深input无法输入：
-      // 强制刷新可解决
       console.log(e);
       this.$forceUpdate();
     },
@@ -365,15 +409,15 @@ export default {
     cellStyle2(){
       return 'border: 1px solid lightgray ; padding: 0'
     },
+    //更改每页最大数量
     handleSizeChange(val) {
-      //更改每页最大数量
       this.page = 1;
       this.pageSize = val;
       this.fetchData(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
     },
+    //换页
     handleCurrentChange(val) {
-      //换页
       this.page = val;
       this.fetchData(val,this.pageSize)
       console.log(`当前页: ${val}`);
@@ -459,15 +503,6 @@ export default {
   height: 50px;
   line-height: 50px;
   font-size: 18px;
-}
-/*分页*/
-.block{
-  background: white;
-  height: 20px;
-  padding-top: 30px;
-  padding-right: 10px;
-  /*padding-bottom: 10px;*/
-  text-align: right;
 }
 
 

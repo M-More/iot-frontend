@@ -16,7 +16,7 @@
               <!--查询字段-->
               <el-col style="font-weight: 700" :span="6">告警名称</el-col>
               <el-col style="font-weight: 700" :span="6">告警编码</el-col>
-              <el-col style="font-weight: 700" :span="6">告警级别</el-col>
+              <el-col style="font-weight: 700;margin-left: 50px" :span="6">*告警级别</el-col>
             </el-row>
             <el-row class="alertQuire-row-2">
               <!--查询内容输入-->
@@ -27,7 +27,10 @@
               </el-col>
               <el-col :span="6">
                 <el-form-item>
-                  <el-input v-model="inputCode" placeholder="请输入告警编码"></el-input>
+                  <el-input v-model="inputCode" placeholder="请输入告警编码"
+                            onKeyUp="value=value.replace(/[\D]/g,'')">
+                    <template slot="prepend">GJ_</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
@@ -119,13 +122,12 @@
         </el-tabs>
       </div>
 
-      <!--分页 待修改-->
       <div class="block">
         <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="page"
-            :page-sizes="[1,2,3,10,20,50]"
+            :page-sizes="[10,20,50]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total=this.total>
@@ -163,8 +165,8 @@ export default {
       tableData: [],
       search: '',
       disablePage: false,
-      total: 20,
-      pageSize: 2,
+      total: 0,
+      pageSize: 10,
       page: 1,  //当前页
 
       //搜索框默认值
@@ -177,7 +179,6 @@ export default {
       toBeSearched: [],
     }
   },
-
   mounted() {
     this.fetchData(this.page,this.pageSize)
   },
@@ -195,11 +196,24 @@ export default {
         params: postData
       }).then(response =>
       {
-        console.log(response.data.data);
-        console.log(typeof response.data.data);
-        console.log(response.data.data[0].createTime);
-        this.tableData = response.data.data;
-
+        console.log(response.data.data[0])
+        let optionsList = [];
+        for (let i = 0; i < response.data.data.length; i++) {
+          let items={
+            alarmCode: response.data.data[i].alarmCode,
+            alarmLevel:response.data.data[i].alarmLevel,
+            alarmName:response.data.data[i].alarmName,
+            alarmStatus:response.data.data[i].alarmStatus,
+            deviceTypeName:response.data.data[i].deviceTypeName,
+            ruleDescription:response.data.data[i].ruleDescription,
+            createUser: response.data.data[i].createUser,
+            createTime: response.data.data[i].createTime.slice(0,19).replace('T',' '),
+            updateTime: response.data.data[i].updateTime.slice(0,19).replace('T',' '),
+            updateUser: response.data.data[i].updateUser,
+          }
+          optionsList.push(items);
+        }
+        this.tableData = optionsList
         this.total = response.data.total;
       }).catch(error =>
       {
@@ -213,26 +227,36 @@ export default {
     },
 
     alertQuery(){
-      let postData = this.qs.stringify({
-        // 待写参数
-
-
-      });
-      this.axios({
-        method: 'post',
-        url: '/supplierList',
-        data: postData
-      }).then(response =>
-      {
-        this.tableData = response.data;
-        this.disablePage = true;
-      }).catch(error =>
-      {
-        console.log(error);
-      });
+      //  查询
+      let postData = {
+        alarmName:this.inputTitle,
+        alarmCode: "GJ_"+ this.inputCode,
+        alarmLevel: this.inputLevel,
+        page:this.page,
+        pageSize:this.pageSize,
+      };
+      console.log(postData)
+      // alarmName alarmCode alarmLevel为空 调用fetchData全查
+      if(postData.alarmName === '' && postData.alarmCode === 'GJ_' && postData.alarmLevel === ''){
+        this.fetchData(this.page,this.pageSize)
+      }else {
+        this.axios({
+          method: 'get',
+          url: 'http://localhost:8080/alarm/getByCondition',
+          params: postData
+        }).then(response => {
+          this.tableData = response.data.data;
+          this.total = response.data.total
+          console.log(response.data);
+          console.log("查询成功");
+        }).catch(error => {
+          console.log(error);
+        });
+      }
     },
+
     alertUpdate(index, row){
-      //  修改，跳转到修改页面
+      // 修改，跳转到修改页面
 
       // 传入修改表格参数
       sessionStorage.setItem('alarmName',row.alarmName);
@@ -243,12 +267,12 @@ export default {
       sessionStorage.setItem('ruleDescription',row.ruleDescription);
 
       // 跳转到修改页面
-      this.$router.replace({path: '/alertList/alertUpdate'})
+      this.$router.replace({path: '/home/alertList/alertUpdate'})
     },
 
     AlertAdd(){
       //  新增，跳转到新增页面
-      this.$router.replace({path: '/alertList/alertAdd'})
+      this.$router.replace({path: '/home/alertList/alertAdd'})
     },
 
     alertDel(index, row){
@@ -284,7 +308,7 @@ export default {
 
     resetForm() {
       this.inputTitle='';
-      this.inputState='';
+      this.inputCode='';
       this.inputLevel='';
     },
 
@@ -306,13 +330,17 @@ export default {
       //更改每页最大数量
       this.page = 1;
       this.pageSize = val;
-      this.fetchData(this.page,this.pageSize)
+      // 新接口
+      this.alertQuery(this.page,this.pageSize)
+      // this.fetchData(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       //换页
       this.page = val;
-      this.fetchData(val,this.pageSize)
+      this.alertQuery(this.page,this.pageSize)
+      // this.fetchData(val,this.pageSize)
+
       console.log(`当前页: ${val}`);
     },
 
@@ -387,6 +415,7 @@ export default {
   border-radius: 20px;
   background: white;
   margin-top: 20px;
+  overflow: scroll;
 }
 .detailList p{
   padding-left: 8px;
@@ -397,22 +426,11 @@ export default {
 }
 .block{
   background: white;
-  height: 20px;
+  height: 40px;
   padding-top: 30px;
   padding-right: 10px;
   /*padding-bottom: 10px;*/
   text-align: right;
 }
 
-.yifabu{
-  color: limegreen;
-}
-
-.weishenheyibohui{
-  color: yellow;
-}
-
-.shenhezhong{
-  color: red;
-}
 </style>

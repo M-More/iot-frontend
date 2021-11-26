@@ -19,6 +19,7 @@
         <el-menu-item index="/home/alertList"><i class="el-icon-data-analysis"></i>告警列表</el-menu-item>
         <el-menu-item index="/home/eventConfList"><i class="el-icon-data-analysis"></i>事件配置列表</el-menu-item>
         <el-menu-item index="/home/eventInfo"><i class="el-icon-data-analysis"></i>事件监控列表</el-menu-item>
+        <el-menu-item index="/home/Simulation"><i class="el-icon-data-analysis"></i>模拟设备告警</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
   </el-menu>

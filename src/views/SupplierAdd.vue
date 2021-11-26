@@ -10,14 +10,18 @@
         <div class="boxRight">
           <div class="xiangqing">
             <el-form ref="form" :model="form" :rules="rules" label-position="top" inline=True class="forms">
-              <el-form-item label="供应商名称" prop="name">
-                <el-input v-model="form.name" placeholder="1-25个字符"></el-input>
+              <el-form-item label="供应商名称" prop="supplierName">
+                <el-input v-model="form.supplierName" placeholder="1-25个字符"></el-input>
               </el-form-item>
-              <el-form-item label="供应商编码" prop="code">
-                <el-input v-model="form.code" placeholder="1-25个字符"></el-input>
+              <el-form-item label="供应商编码" prop="supplierCode">
+                <el-input v-model="form.supplierCode" placeholder="编码格式为：GYS_数字,请直接输入后面的数字"
+                          onKeyUp="value=value.replace(/[\D]/g,'')">
+                  <template slot="prepend">GYS_</template>
+                </el-input>
               </el-form-item>
-              <el-form-item label="联系电话" prop="contactNumber">
-                <el-input v-model="form.contactNumber" placeholder="1-25个字符"></el-input>
+              <el-form-item label="联系电话" prop="contactTel">
+                <el-input v-model="form.contactTel" placeholder="请输入手机号码"
+                ></el-input>
               </el-form-item>
               <el-form-item label="联系人姓名" prop="contactName">
                 <el-input v-model="form.contactName" placeholder="1-25个字符"></el-input>
@@ -31,7 +35,7 @@
                     type="textarea"
                     :rows="4"
                     placeholder="请输入内容"
-                    v-model="form.mainText"
+                    v-model="form.note"
                 ></el-input>
               </el-form-item>
             </el-form>
@@ -40,7 +44,6 @@
       </div>
       <div class="boxFooter">
         <el-button class="bottoms-style" size="mini" type="success" @click="save('form')">保存</el-button>
-        <el-button class="bottoms-style" size="mini" type="warning" @click="upload('form')">提交审核</el-button>
         <el-button class="bottoms-style" size="mini" @click="back">返回</el-button>
       </div>
       <div class="boxSpace"></div>
@@ -189,24 +192,89 @@
 <script>
 export default {
   data(){
-    return {
+    // var isMobileNumber= (rule, value, callback) => {
+    //   if (!value) {
+    //     return new Error("请输入电话号码");
+    //   } else {
+    //     const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
+    //     const isPhone = reg.test(value);
+    //     value = Number(value); //转换为数字
+    //     if (typeof value === "number" && !isNaN(value)) {//判断是否为数字
+    //       value = value.toString(); //转换成字符串
+    //       if (value.length < 0 || value.length > 12 || !isPhone) { //判断是否为11位手机号
+    //         callback(new Error("手机号码格式如:138xxxx8754"));
+    //       } else {
+    //         callback();
+    //       }
+    //     } else {
+    //       callback(new Error("请输入电话号码"));
+    //     }
+    //   }
+    // };
+      return {
       form: {
-        name: '',
-        code: '',
-        contactNumber: '',
+        supplierName: '',
+        supplierCode: '',
+        contactTel: '',
         contactName: '',
         address: '',
-        mainText: '',
+        note: '',
       },
       rules: {
-        name: [
+        supplierName: [
           { required: true, message: '请输入供应商名称', trigger: 'blur' },
         ],
-        code: [
+        supplierCode: [
           { required: true, message: '请输入供应商编码', trigger: 'blur' }
         ],
-        contactNumber: [
-          { required: true, message: '请输入联系电话', trigger: 'blur' }
+        // contactTel: [
+        //   { required: true, message: "请输入手机号码", trigger: "blur" },
+        //   { validator: isMobileNumber, trigger: "blur" },
+        // ],
+        contactTel:[
+          { required: true, message: '请输入手机号码', trigger: 'blur' },
+          {
+            validator:function(rule,value,callback){
+              let regPone = null
+              let mobile = /^(1[3456789]\d{9})$/  //手机号
+              let tel = /^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/ // 座机
+              if (value !== null && value.charAt(0) === '0') { // charAt查找第一个字符方法，用来判断输入的是座机还是手机号
+                regPone = tel
+              } else if (value !== null && value.charAt(0) !== '0') {
+                regPone = mobile
+              }
+              if (regPone === null) {
+                return callback(
+                    new Error('请输入电话')
+                )
+              } else if (!regPone.test(value)) {
+                return callback(
+                    new Error("请输入正确的电话格式,其中座机格式'区号-座机号码'")
+                )
+              } else {
+                callback()
+              }
+              // if (!value) {
+              //   callback();
+              // } else {
+              //   const reg = /^(\d{3,4}-)?\d{7,8}$/;
+              //   const isTel = reg.test(value);
+              //   if (value.length < 10 || value.length > 13 || !isTel ) {//判断传真字符范围是在10到13
+              //     callback(new Error("座机或传真格式如:0376-12345678"));
+              //   } else {
+              //     callback();
+              //   }
+              // }
+
+              // if(/^1[34578]\d{9}$/.test(value) == false ){
+              //   callback(new Error("请输入正确的手机号"));
+              // }else{
+              //   callback();
+              // }
+
+            },
+            trigger: 'blur'
+          },
         ],
         contactName: [
           { required: true, message: '请输入联系人姓名', trigger: 'blur' }
@@ -214,39 +282,41 @@ export default {
       }
     }
   },
-  mounted() {
-    this.fetchSup()
-  },
+  // mounted() {
+  //   this.fetchSup()
+  // },
   methods: {
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let postData={
-            name: this.form.name,
-            code: this.form.code,
-            contactNumber: this.form.contactNumber,
+            supplierName: this.form.supplierName,
+            supplierCode: "GYS_" +this.form.supplierCode,
+            contactTel: this.form.contactTel,
             contactName: this.form.contactName,
             address: this.form.address,
-            mainText: this.form.mainText,
-            createUser:"ysy"
+            note: this.form.note,
+            createUser:sessionStorage.getItem('userName'),
           };
           console.log(postData)
           this.axios({
             method: 'post',
             url:'http://localhost:8080/supplier/add',
-            params:postData
-          }).then(response=>
-          {
-            console.log("成功");
+            params: postData
+          }).then(response => {
             console.log(response);
-          }).catch(error =>
-          {
+            if (response.data.code === 0) {
+              alert('保存成功！');
+            }
+            if (response.data.code === 9) {
+              alert('添加失败（编号重复）');
+            }
+
+          }).catch(error => {
             console.log(error);
           });
 
-          alert('保存成功！');
-          // console.log(this.form.alarmName)
-          this.$router.replace('/eventConfList');
+          this.$router.replace('/home/supplierList');
         } else {
           console.log('error submit!!');
           return false;
@@ -254,21 +324,12 @@ export default {
       });
     },
     back() {
-      this.$router.replace('/eventConfList')
-    }
-    // upload(formName) {
-    //   this.$refs[formName].validate((valid) => {
-    //     if (valid) {
-    //       alert('提交成功！');
-    //     } else {
-    //       console.log('提交失败！');
-    //       return false;
-    //     }
-    //   });
-    // },
-    // back() {
-    //   this.$router.replace('/fengcaitable')
-    // }
+      this.$router.replace('/home/supplierList')
+    },
+
+
+
+
   }
 }
 

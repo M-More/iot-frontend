@@ -32,10 +32,9 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="设备类型（下拉框）" prop="deviceTypeName">
+              <el-form-item label="设备类型" prop="deviceTypeName">
                 <el-select v-model="form.deviceTypeName"
-                           placeholder="选择设备类型"
-                           @change="selectDevName">
+                           placeholder="选择设备类型">
                   <el-option
                       v-for="item in optionsOfDev"
                       :key="item.id"
@@ -45,7 +44,10 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="状态" prop="alarmStatus">
-                <el-input v-model="form.alarmStatus" placeholder="状态"></el-input>
+                <el-select v-model="form.alarmStatus" placeholder="默认开关">
+                  <el-option label="开" value="开"></el-option>
+                  <el-option label="关" value="关"></el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="规则说明" prop="ruleDescription">
                 <el-input v-model="form.ruleDescription"></el-input>
@@ -263,7 +265,7 @@ export default {
       //读取设备类型
       this.axios({
         method: 'get',
-        url: 'http://localhost:8080/deviceType/getAll',
+        url: 'http://localhost:8080/deviceType/getAllName',
       }).then(response => {
         let optionsList = [];
         for (let i = 0; i < response.data.length; i++) {
@@ -291,6 +293,7 @@ export default {
             deviceTypeName: this.form.deviceTypeName,
             alarmStatus: this.form.alarmStatus,
             ruleDescription: this.form.ruleDescription,
+            createUser:sessionStorage.getItem('userName')
           };
           console.log(postData)
           this.axios({
@@ -303,7 +306,7 @@ export default {
               alert('保存成功！');
             }
             if (response.data.code === 9) {
-              alert('添加失败（编号重复）');
+              alert('添加失败');
             }
 
           }).catch(error => {
@@ -311,7 +314,7 @@ export default {
           });
 
           // alert('保存成功！');
-          this.$router.replace('/alertList');
+          this.$router.replace('/home/alertList');
         } else {
           console.log('error submit!!');
           return false;
@@ -319,7 +322,7 @@ export default {
       });
     },
     back() {
-      this.$router.replace('/alertList')
+      this.$router.replace('/home/alertList')
     }
   }
 }
