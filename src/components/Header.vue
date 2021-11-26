@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="welcome">
-      <div class="selection">
+      <div class="selection"
         <el-button icon="el-icon-s-unfold" class="foldbutton"></el-button>
       </div>
 
