@@ -27,7 +27,7 @@
               </el-col>
               <el-col :span="6">
                 <el-form-item>
-                  <el-select v-model="inputType" placeholder="选择设备类型" @change="selectBrandName">
+                  <el-select v-model="inputTypeName" placeholder="选择事件类型">
                     <el-option
                         v-for="item in optionsOfDev"
                         :key="item.id"
@@ -39,7 +39,7 @@
               </el-col>
               <el-col :span="6">
                 <el-form-item>
-                  <el-select v-model="inputBrand" placeholder="选择设备品牌">
+                  <el-select v-model="inputBrand" placeholder="选择事件品牌">
                     <el-option
                         v-for="item in optionsOfBrand"
                         :key="item.id"
@@ -51,7 +51,7 @@
               </el-col>
               <el-col :span="6" >
                 <el-form-item style="text-align: right;">
-                  <el-button  type="warning" @click="supQuery">查询</el-button>
+                  <el-button  type="warning" @click="equipQuery">查询</el-button>
                   <el-button  type="danger"  @click="resetForm" >重置</el-button>
                 </el-form-item>
               </el-col>
@@ -63,9 +63,9 @@
     <!--下方列表信息部分-->
     <div class="detailList">
       <el-row>
-          <p>设备列表
+        <p>设备列表
           <el-button  type="success" @click="equipAdd" style="float:right; margin-right: 18px">新增</el-button>
-          </p>
+        </p>
       </el-row>
 
       <div>
@@ -80,8 +80,7 @@
                   style="width: 100%; font-size: 8px;">
                 <el-table-column
                     prop="deviceName"
-                    label="设备名称"
-                    show-overflow-tooltip>
+                    label="设备名称">
                 </el-table-column>
                 <el-table-column
                     prop="deviceTypeName"
@@ -106,6 +105,7 @@
                 <el-table-column
                     prop="action"
                     label="操作"
+                    align="center"
                     show-overflow-tooltip>
                   <template slot-scope="scope">
                     <el-button class="equipUpdateButt" type="text" @click="equipUpdate(scope.$index, scope.row)">修改信息</el-button>
@@ -122,14 +122,13 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="page"
-            :page-sizes="[10,20,50]"
+            :page-sizes="[10, 20, 50]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total=this.total>
         </el-pagination>
       </div>
 
-      <span id="testClick"></span>
 
     </div>
   </div>
@@ -140,40 +139,33 @@ export default {
   name: "Equipment",
   data() {
     return {
-      deviceName:"",     //由deviceTypeName和deviceNumber拼接而成
-      deviceTypeName:"",
-      deviceBrand:"",
-      deviceNumber:"",
-      installAddress:"",
-      createTime:"",
-      updateTime:"",
+      deviceName:'',
+      deviceTypeName:'',
+      deviceBrand:'',
+      deviceNumber:'',
+      installAddress:'',
 
+      tableData: [],
       optionsOfDev:[],
       optionsOfBrand:[],
-
-      search: '',
       disablePage: false,
       total: 20,
       pageSize: 10,
-      page: 1,  //当前页
+      page: 1,
 
       //搜索框默认值
       inputTitle: '',
-      inputType: '',
+      inputTypeName: '',
       inputBrand: '',
       activeName: 'first',
 
-      isSearch: true,
-      toBeSearched: [],
     }
   },
 
   mounted() {
-    //初始全查
     this.fetchData(this.page,this.pageSize)
-    //初始读取全部设备类型名称
-    this.fetchDev()
     this.selectBrandName()
+    this.fetchDev()
   },
 
   methods: {
@@ -189,14 +181,12 @@ export default {
         params: postData
       }).then(response =>
       {
-
         this.tableData = response.data.data
         this.total = response.data.total
       }).catch(error =>
       {
         console.log(error);
       });
-
     },
 
     fetchDev() {
@@ -214,10 +204,7 @@ export default {
           };
           optionsList.push(optionx);
         }
-        console.log(typeof optionsList)
-        console.log(optionsList)
         this.optionsOfDev = optionsList;
-        console.log(this.optionsOfDev)
       }).catch(error => {
         console.log(error);
       });
@@ -232,8 +219,6 @@ export default {
         url: 'http://localhost:8080/supplier/getAllName',
         params: postData
       }).then(response => {
-        console.log("供应商")
-        console.log(response.data)
         let optionsList = [];
         for(let i=0;i<response.data.length;i++){
           let optionx={
@@ -255,11 +240,10 @@ export default {
       //刷新
       this.$router.go(0);
     },
-    supQuery() {
-      //查询
+    equipQuery() {
       let postData = {
         deviceName: this.inputTitle,
-        deviceTypeName: this.inputType,
+        deviceTypeName: this.inputTypeName,
         deviceBrand: this.inputBrand,
         page: this.page,
         pageSize: this.pageSize,
@@ -331,7 +315,7 @@ export default {
 
     resetForm() {
       this.inputTitle='';
-      this.inputType ='';
+      this.inputTypeName ='';
       this.inputBrand='';
     },
 
@@ -355,14 +339,14 @@ export default {
       //更改每页最大数量
       this.page = 1;
       this.pageSize = val;
-      this.supQuery(this.page,this.pageSize)
+      this.equipQuery(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
       //document.getElementById('testClick').click()
     },
     handleCurrentChange(val) {
       //换页
       this.page = val;
-      this.supQuery(val,this.pageSize)
+      this.equipQuery(val,this.pageSize)
       console.log(`当前页: ${val}`);
       //document.getElementById('testClick').click()
     },
