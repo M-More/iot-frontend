@@ -15,14 +15,7 @@
           </el-col>
           <el-col :span="10">
 <!--            <p class="welcome-name-content">欢迎登录：-->
-              <el-select v-model="query" placeholder="请选择">
-                <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                </el-option>
-              </el-select>
+            <p id="userNameText"></p>
 <!--            </p>-->
           </el-col>
         </el-row>
@@ -71,9 +64,15 @@
         queryCenters: '01'
       }
     },
+    mounted() {
+      this.setUserNameText();
+    },
     methods:{
       changeHtml(){
         this.$router.replace({path: '/BigPingF'})
+      },
+      setUserNameText(){
+        document.getElementById("userNameText").innerText=sessionStorage.getItem("userName");
       }
     }
   }

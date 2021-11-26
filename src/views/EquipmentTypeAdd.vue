@@ -208,7 +208,7 @@ export default {
             deviceTypeName: this.form.deviceTypeName,
             deviceTypeCode: "SBLX_" + this.form.deviceTypeCode,
             deviceNote: this.form.deviceNote,
-            createUser: "xk"
+            createUser: sessionStorage.getItem('userName'),
           };
           console.log(postData)
           this.axios({
@@ -221,12 +221,12 @@ export default {
               alert('保存成功！');
             }
             if (response.data.code === 9) {
-              alert('添加失败（编号重复）');
+              alert('添加失败');
             }
           }).catch(error => {
             console.log(error);
           });
-          this.$router.replace('/equipmentTypeList');
+          this.$router.replace('/home/equipmentTypeList');
         } else {
           console.log('error submit!!');
           return false;
@@ -234,7 +234,7 @@ export default {
       });
     },
     back() {
-      this.$router.replace('/equipmentTypeList')
+      this.$router.replace('/home/equipmentTypeList')
     }
   }
 }

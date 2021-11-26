@@ -44,6 +44,7 @@ export default {
           document.getElementById("cannotLogin").style.display='none';
           sessionStorage.setItem('userAccount',document.getElementById('userName').value);
           sessionStorage.setItem('userPassword',document.getElementById('password').value);
+          sessionStorage.setItem('userName',response.data.data[0].userName);
           this.$router.replace('/home')
 
         }

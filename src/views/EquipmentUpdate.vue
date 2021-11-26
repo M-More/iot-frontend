@@ -1,30 +1,19 @@
 <template>
   <div class="detailed-page">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>警告修改</el-breadcrumb-item>
-      <el-breadcrumb-item>警告列表</el-breadcrumb-item>
+      <el-breadcrumb-item>设备修改</el-breadcrumb-item>
+      <el-breadcrumb-item>设备列表</el-breadcrumb-item>
     </el-breadcrumb>
-    <!--    表单-->
+    <!-- 表单-->
     <el-form ref="form" :model="form" :rules="rules" label-position="top" inline=True class="forms">
-      <el-form-item label="设备类型名称" prop="deviceTypeName">
-        <el-input v-model="form.deviceTypeName"></el-input>
+      <el-form-item label="经度" prop="longitude">
+        <el-input v-model="form.longitude"></el-input>
       </el-form-item>
-      <el-form-item label="设备类型编号" prop="deviceTypeCode">
-        <el-input v-model="form.deviceTypeCode"
-                  placeholder="编码格式为：SBLX_数字 "
-                  onKeyUp="value=value.replace(/[\D]/g,'')">
-          <template slot="prepend">SBLX_</template>
-        </el-input>
+      <el-form-item label="纬度" prop="latitude">
+        <el-input v-model="form.latitude"></el-input>
       </el-form-item>
-      <el-form-item label="备注" class="el-form-item-full">
-        <el-input
-            type="textarea"
-            :rows="4"
-            placeholder="请输入内容"
-            v-model="form.deviceNote"
-        ></el-input>
-      </el-form-item>
-      <!--  底部按钮-->
+
+      <!-- 底部按钮-->
       <el-row class="deleteAndDown">
         <el-button size="mini" type="success" @click="save">保存</el-button>
         <el-button size="mini" @click="back">返回</el-button>
@@ -44,9 +33,8 @@ export default {
       optionsOfDev:[],
       optionsOfRul:[],
       form: {
-        deviceTypeName: sessionStorage.getItem('deviceTypeName'),
-        deviceTypeCode: sessionStorage.getItem('deviceTypeCode').slice(5),
-        deviceNote: sessionStorage.getItem('deviceNote'),
+        longitude: sessionStorage.getItem('longitude'),
+        latitude: sessionStorage.getItem('latitude')
       },
 
     }
@@ -54,15 +42,24 @@ export default {
   methods:{
     save(){
       let postData={
-        deviceTypeName: this.form.deviceTypeName,
-        deviceTypeCode: "SBLX_" + this.form.deviceTypeCode,
-        deviceNote: this.form.deviceNote,
+
+        deviceNumber: sessionStorage.getItem('deviceNumber'),
+        deviceSort: sessionStorage.getItem('deviceSort'),
+        deviceBrand: sessionStorage.getItem('deviceBrand'),
+        deviceTypeName: sessionStorage.getItem('deviceTypeName'),
+        deviceModel: sessionStorage.getItem('deviceModel'),
+        installDate: sessionStorage.getItem('installDate'),
+        longitude: this.form.longitude,
+        latitude: this.form.latitude,
+        installAddress: sessionStorage.getItem('installAddress'),
+        deviceStatus: sessionStorage.getItem('deviceStatus'),
         updateUser:sessionStorage.getItem('userName'),
+        deviceName:sessionStorage.getItem('deviceTypeName') +sessionStorage.getItem('deviceNumber')
       };
       console.log(postData);
       this.axios({
         method: 'post',
-        url:'http://localhost:8080/deviceType/update',
+        url:'http://localhost:8080/deviceInfo/update',
         params:postData
       }).then(response=>
       {
@@ -77,7 +74,6 @@ export default {
       {
         console.log(error);
       });
-      alert('保存成功！');
       this.$router.replace('/home/equipmentList');
     },
     back(){

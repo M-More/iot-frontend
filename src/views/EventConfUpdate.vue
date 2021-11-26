@@ -109,19 +109,19 @@ export default {
       //读取设备类型
       this.axios({
         method: 'get',
-        url: 'http://localhost:8080/deviceType/getAll',
+        url: 'http://localhost:8080/deviceType/getAllName',
       }).then(response =>
       {
         let optionsList = [];
         for(let i=0;i<response.data.length;i++){
-          console.log(Object.values(response.data)[i]);
+          // console.log(Object.values(response.data)[i]);
           let optionx={
             id:i,
             name:Object.values(response.data)[i],
           };
           optionsList.push(optionx);
         }
-        console.log(optionsList)
+        // console.log(optionsList)
         this.optionsOfDev = optionsList;
       }).catch(error =>
       {
@@ -134,7 +134,7 @@ export default {
         eventLevel: this.form.eventLevel,
         deviceTypeName: this.form.deviceTypeName,
         alarmName: this.form.alarmName.toString(),
-        updateUser:"fzn",
+        updateUser:sessionStorage.getItem('userName'),
         eventConfigId: this.form.eventConfigId
       };
       console.log(postData.eventName);
@@ -156,18 +156,19 @@ export default {
     },
     selectDevName(){
       let postData={
-        deviceTypeName:this.form.deviceTypeName
+        deviceTypeName: this.form.deviceTypeName
       };
       //读取规则
       this.axios({
         method: 'get',
-        url: 'http://localhost:8080/alarm/getbydevice',
+        url: 'http://localhost:8080/alarm/getBy',
         params: postData
       }).then(response =>
       {
         let optionsList = [];
+        console.log(response.data)
         for(let i=0;i<response.data.length;i++){
-          console.log(Object.values(response.data)[i]);
+          // console.log(Object.values(response.data)[i]);
           let optionx={
             id:i,
             name:Object.values(response.data)[i],

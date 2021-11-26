@@ -1,4 +1,3 @@
-
 <template>
   <el-card class="box-card">
   <div class="boxPage">
@@ -260,13 +259,14 @@ export default {
   },
   mounted() {
     this.fetchDev()
+    console.log(sessionStorage.getItem('userName'))
   },
   methods: {
     fetchDev(){
       //读取设备类型
       this.axios({
         method: 'get',
-        url: 'http://localhost:8080/deviceType/getAll',
+        url: 'http://localhost:8080/deviceType/getAllName',
       }).then(response =>
       {
         let optionsList = [];
@@ -292,10 +292,11 @@ export default {
       //读取规则
       this.axios({
         method: 'get',
-        url: 'http://localhost:8080/alarm/getbydevice',
+        url: 'http://localhost:8080/alarm/getBy',
         params: postData
-      }).then(response =>
-      {
+        }).then(response =>
+        {
+        console.log(response.data)
         let optionsList = [];
         for(let i=0;i<response.data.length;i++){
           console.log(Object.values(response.data)[i]);
@@ -305,8 +306,8 @@ export default {
           };
           optionsList.push(optionx);
         }
-        console.log(optionsList)
         this.optionsOfRul = optionsList;
+        console.log(this.optionsOfRul)
       }).catch(error =>
       {
         console.log(error);
@@ -321,7 +322,7 @@ export default {
             eventLevel: this.form.eventLevel,
             deviceTypeName: this.form.deviceTypeName,
             alarmName: this.form.alarmName.join(','),
-            createUser:sessionStorage.getItem('userAccount')
+            createUser:sessionStorage.getItem('userName')
           };
           console.log(postData)
           this.axios({

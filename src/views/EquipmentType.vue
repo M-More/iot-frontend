@@ -26,7 +26,10 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item>
-                  <el-input v-model="inputCode" placeholder="请输入设备类型编号"></el-input>
+                  <el-input v-model="inputCode" placeholder="请输入设备类型编号"
+                    onKeyUp="value=value.replace(/[\D]/g,'')">
+                    <template slot="prepend">SBLX_</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8" >
@@ -90,7 +93,7 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="page"
-            :page-sizes="[1,2,3,10,20,50]"
+            :page-sizes="[10,20,50]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total=this.total>
@@ -114,8 +117,8 @@ export default {
       tableData: [],
       search: '',
       disablePage: false,
-      total: 20,
-      pageSize: 2,
+      total: 0,
+      pageSize: 10,
       page: 1,
 
 
@@ -156,24 +159,34 @@ export default {
     reflash(){
       this.$router.go(0);
     },
-    equipTypeQuery(){
+    equipTypeQuery() {
       //  查询
-      let postData = this.qs.stringify({
-        // 待写参数
+      let postData;
+      console.log(postData)
+      if (this.inputCode !== '') {
+        postData = {
+          deviceTypeName: this.inputTitle,
+          deviceTypeCode: "SBLX_" + this.inputCode,
+        }
+      }else {
+        postData = {
+          deviceTypeName: this.inputTitle,
+          deviceTypeCode: this.inputCode,
+        }
+      }
+        this.axios({
+          method: 'get',
+          url: 'http://localhost:8080/deviceType/getBy',
+          params: postData
+        }).then(response => {
+          console.log("返回")
+          console.log(response)
+          this.tableData = response.data
+          this.total = response.data.length
+        }).catch(error => {
+          console.log(error);
+        });
 
-      });
-      this.axios({
-        method: 'post',
-        url: '/deviceType',
-        data: postData
-      }).then(response =>
-      {
-        this.tableData = response.data;
-        this.disablePage = true;
-      }).catch(error =>
-      {
-        console.log(error);
-      });
     },
     equipTypeUpdate(index, row){
       //  修改，跳转到修改页面
@@ -183,27 +196,26 @@ export default {
       sessionStorage.setItem('deviceNote',row.deviceNote);
 
       // 跳转到修改页面
-      this.$router.replace({path: '/equipmentTypeList/equipmentTypeUpdate'})
+      this.$router.replace({path: '/home/equipmentTypeList/equipmentTypeUpdate'})
     },
     equipTypeAdd(){
       //  新增，跳转到新增页面
-      this.$router.replace({path: '/equipmentTypeList/equipmentTypeAdd'})
+      this.$router.replace({path: '/home/equipmentTypeList/equipmentTypeAdd'})
     },
     equipTypeDel(index, row){
       //  删除
-      console.log(index, row);
       this.$confirm('删除操作, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let postData = this.qs.stringify({
+        let postData = {
           deviceTypeCode: row.deviceTypeCode,
-        });
+        };
         this.axios({
           method: 'post',
           url:'http://localhost:8080/deviceType/delete',
-          data:postData
+          params:postData
         }).then(response =>
         {
           console.log(response);
@@ -244,12 +256,14 @@ export default {
       //更改每页最大数量
       this.page = 1;
       this.pageSize = val;
+      // this.equipTypeQuery(this.page,this.pageSize)
       this.fetchData(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       //换页
       this.page = val;
+      // this.equipTypeQuery(this.page,this.pageSize)
       this.fetchData(val,this.pageSize)
       console.log(`当前页: ${val}`);
     },
@@ -334,7 +348,7 @@ export default {
 }
 .block{
   background: white;
-  height: 20px;
+  height: 40px;
   padding-top: 30px;
   padding-right: 10px;
   /*padding-bottom: 10px;*/

@@ -28,6 +28,8 @@ import EventConfAdd from "../views/EventConfAdd.vue";
 import EventConfUpdate from "../views/EventConfUpdate.vue";
 import EventInfo from "../views/EventInfo.vue";
 import EventInfoDetail from "../views/EventInfoDetail.vue";
+import EventInfoDeviceDetail from "../views/EventInfoDeviceDetail.vue";
+import Simulation from "../views/Simulation.vue";
 import BigPingF from "../views/BigPingF.vue";
 
 import SupplierList from "../views/Supplier.vue"
@@ -186,10 +188,21 @@ const routes = [
         component: EventInfoDetail
       },
       {
+        path:'eventInfo/eventInfoDetail/eventInfoDeviceDetail',
+        name:'EventInfoDeviceDetail',
+        component: EventInfoDeviceDetail
+      },
+      {
+        path:'simulation',
+        name:'Simulation',
+        component: Simulation
+      },
+      {
         path:'bigPingF',
         name:'BigPingF',
         component: BigPingF
-      }
+      },
+
     ]
   },
   {

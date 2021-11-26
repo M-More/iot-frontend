@@ -14,15 +14,9 @@
           <el-form class="equipQuire-form">
             <el-row class="equipQuire-row-1">
               <!--查询字段-->
-              <el-col style="font-weight: 700" :span="6">
-                设备名称
-              </el-col>
-              <el-col style="font-weight: 700" :span="6">
-                设备类型
-              </el-col>
-              <el-col style="font-weight: 700" :span="6">
-                设备品牌
-              </el-col>
+              <el-col style="font-weight: 700" :span="6">设备名称</el-col>
+              <el-col style="font-weight: 700;margin-left: 80px" :span="6" >设备类型</el-col>
+              <el-col style="font-weight: 700" :span="6">设备品牌</el-col>
             </el-row>
             <el-row class="equipQuire-row-2">
               <!--查询内容输入-->
@@ -33,18 +27,32 @@
               </el-col>
               <el-col :span="6">
                 <el-form-item>
-                  <el-input v-model="inputTitle" placeholder="请输入设备类型"></el-input>
+                  <el-select v-model="inputType" placeholder="选择设备类型" @change="selectBrandName">
+                    <el-option
+                        v-for="item in optionsOfDev"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.name">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item>
-                  <el-input v-model="inputTitle" placeholder="请输入设备品牌"></el-input>
+                  <el-select v-model="inputBrand" placeholder="选择设备品牌">
+                    <el-option
+                        v-for="item in optionsOfBrand"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.name">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="6" >
                 <el-form-item style="text-align: right;">
-                  <el-button class="el-button1" type="warning" @click="supQuery">查询</el-button>
-                  <el-button class="el-button2" type="danger"  @click="resetForm" >重置</el-button>
+                  <el-button  type="warning" @click="supQuery">查询</el-button>
+                  <el-button  type="danger"  @click="resetForm" >重置</el-button>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -52,24 +60,16 @@
         </div>
       </el-col>
     </el-row>
-
     <!--下方列表信息部分-->
     <div class="detailList">
       <el-row>
-        <el-col :span="8">
-          <p>列表</p>
-        </el-col>
-        <el-col :span="8" >
-          <el-button class="el-button1" type="success" @click="equipAdd">新增</el-button>
-        </el-col>
-        <el-col :span="8" >
-          <el-button class="el-button1" type="success" @click="reflash">刷新</el-button>
-        </el-col>
+          <p>设备列表
+          <el-button  type="success" @click="equipAdd" style="float:right; margin-right: 18px">新增</el-button>
+          </p>
       </el-row>
 
       <div>
         <el-tabs style="background: white; line-height: 10px" v-model="activeName" type="card" @tab-click="handleClick">
-          <el-tab-pane label="设备信息" name="first">
             <template>
               <el-table
                   class="el-table-list"
@@ -79,175 +79,58 @@
                   row-style="height:10px"
                   style="width: 100%; font-size: 8px;">
                 <el-table-column
-                    prop="equipName"
+                    prop="deviceName"
                     label="设备名称"
-                    width="100px"
-                >
+                    show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
-                    prop="equipType"
+                    prop="deviceTypeName"
                     label="设备类型"
-                    width="100px"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
-                    prop="equipBrand"
+                    prop="deviceBrand"
                     label="设备品牌"
-                    width="150px"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
-                    prop="equipId"
+                    prop="deviceNumber"
                     label="设备编号"
-                    width="150px"
-                    show-overflow-tooltip><!--原createTime-->
+                    show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
-                    prop="equipInsLocation"
+                    prop="installAddress"
                     label="安装位置"
-                    width="150px"
-                    show-overflow-tooltip><!--原creater-->
+                    show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
                     prop="action"
                     label="操作"
-                    width="150px"
                     show-overflow-tooltip>
                   <template slot-scope="scope">
-                    <el-button class="equipUpdateButt" type="text" @click="equipUpdate">修改信息</el-button>
+                    <el-button class="equipUpdateButt" type="text" @click="equipUpdate(scope.$index, scope.row)">修改信息</el-button>
                     <el-button type="text" @click="equipDel(scope.$index, scope.row)">删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
             </template>
-          </el-tab-pane>
-          <el-tab-pane label="信息风采" name="second">
-            <!--            <template>-->
-            <!--              <el-table-->
-            <!--                  class="el-table-list"-->
-            <!--                  :data="tableData"-->
-            <!--                  :header-cell-style="headerStyle2"-->
-            <!--                  :cell-style="cellStyle2"-->
-            <!--                  row-style="height:10px"-->
-            <!--                  style="width: 100%; font-size: 8px;">-->
-            <!--                <el-table-column-->
-            <!--                    prop="number"-->
-            <!--                    label="序号"-->
-            <!--                    width="50px"-->
-            <!--                >-->
-            <!--                </el-table-column>-->
-            <!--                <el-table-column-->
-            <!--                    prop="title"-->
-            <!--                    label="标题"-->
-            <!--                    width="150px"-->
-            <!--                    show-overflow-tooltip>-->
-            <!--                </el-table-column>-->
-            <!--                <el-table-column-->
-            <!--                    prop="community"-->
-            <!--                    label="所属社区"-->
-            <!--                    width="150px"-->
-            <!--                    show-overflow-tooltip>-->
-            <!--                </el-table-column>-->
-            <!--                <el-table-column-->
-            <!--                    prop="createTime"-->
-            <!--                    label="创建时间"-->
-            <!--                    width="150px"-->
-            <!--                    show-overflow-tooltip>-->
-            <!--                </el-table-column>-->
-            <!--                <el-table-column-->
-            <!--                    prop="creater"-->
-            <!--                    label="创建人"-->
-            <!--                    width="150px"-->
-            <!--                    show-overflow-tooltip>-->
-            <!--                </el-table-column>-->
-            <!--                <el-table-column-->
-            <!--                    prop="status"-->
-            <!--                    label="状态"-->
-            <!--                    width="150px"-->
-            <!--                    show-overflow-tooltip>-->
-            <!--                  <template slot-scope="item">-->
-            <!--                    <span :class="item.row.status === '已发布' ? 'yifabu' :-->
-            <!--                            (item.row.status === '未审核' || item.row.status === '已驳回' ? 'weishenheyibohui' : 'shenhezhong')">-->
-            <!--                      {{item.row.status}}-->
-            <!--                    </span>-->
-            <!--                  </template>-->
-            <!--                </el-table-column>-->
-            <!--                <el-table-column-->
-            <!--                    prop="action"-->
-            <!--                    label="操作"-->
-            <!--                    width="150px"-->
-            <!--                    show-overflow-tooltip>-->
-            <!--                  <template slot-scope="item">-->
-            <!--                    <el-button-->
-            <!--                        type="text" @click="audit"-->
-            <!--                        v-if="item.row.status==='未审核' || item.row.status==='审核中'">-->
-            <!--                      审核-->
-            <!--                    </el-button>-->
-            <!--                    <el-button-->
-            <!--                        type="text" @click.native.prevent="clickEventDialog(item.row)">-->
-            <!--                      流程信息-->
-            <!--                    </el-button>-->
-
-            <!--                    <el-dialog-->
-            <!--                        class="tanchuang"-->
-            <!--                        title="流程信息"-->
-            <!--                        :visible.sync="dialogVisible"-->
-            <!--                        :show-close="false"-->
-            <!--                        :append-to-body="true"-->
-            <!--                        width="60%">-->
-            <!--                      <div>-->
-            <!--                        <span>新增人： </span>-->
-            <!--                        <span>{{creater}}</span>-->
-            <!--                        <br>-->
-            <!--                        <span>新增时间： </span>-->
-            <!--                        <span>{{createTime}}</span>-->
-            <!--                        <br>-->
-            <!--                        <br>-->
-            <!--                        <span>机审时间： </span>-->
-            <!--                        <span>{{machineTime}}</span>-->
-            <!--                        <br>-->
-            <!--                        <span>机审结果： </span>-->
-            <!--                        <span>{{machineRes}}-->
-            <!--                          </span>-->
-            <!--                        <br>-->
-            <!--                        <br>-->
-            <!--                        <span>人工审核人： </span>-->
-            <!--                        <span>{{artificialPeo}}</span>-->
-            <!--                        <br>-->
-            <!--                        <span>人工审核时间： </span>-->
-            <!--                        <span>{{artificialTime}}</span>-->
-            <!--                        <br>-->
-            <!--                        <span>人工结果： </span>-->
-            <!--                        <span>{{artificialRes}}</span>-->
-            <!--                        <br>-->
-            <!--                      </div>-->
-            <!--                      <span slot="footer" class="dialog-footer">-->
-            <!--                        <el-button size="mini" @click="dialogVisible = false">关 闭</el-button>-->
-            <!--                      </span>-->
-            <!--                    </el-dialog>-->
-            <!--                  </template>-->
-            <!--                </el-table-column>-->
-            <!--              </el-table>-->
-            <!--            </template>-->
-          </el-tab-pane>
-          <el-tab-pane label="大屏通知" name="third"></el-tab-pane>
-          <el-tab-pane label="大屏风采" name="fourth"></el-tab-pane>
-          <el-tab-pane label="物业信息公开" name="fifth"></el-tab-pane>
         </el-tabs>
       </div>
 
-      <!--分页 待修改-->
       <div class="block">
         <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page="currentPage4"
-            :page-sizes="[1, 2, 3]"
-            :page-size="3"
+            :current-page="page"
+            :page-sizes="[10,20,50]"
+            :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="4">
+            :total=this.total>
         </el-pagination>
       </div>
+
+      <span id="testClick"></span>
+
     </div>
   </div>
 </template>
@@ -257,136 +140,163 @@ export default {
   name: "Equipment",
   data() {
     return {
-      equipKing:'',//视频设备和非视频设备
-      equipName:"",
-      equipType:"",
-      equipId:"",
-      equipBrand:"",
-      equipInsLocation:"",
-      equipInsDate:'',
-      longitudinal:'',
-      latitude:'',
+      deviceName:"",     //由deviceTypeName和deviceNumber拼接而成
+      deviceTypeName:"",
+      deviceBrand:"",
+      deviceNumber:"",
+      installAddress:"",
+      createTime:"",
+      updateTime:"",
 
-      note:"",
-      // tableData: [],
+      optionsOfDev:[],
+      optionsOfBrand:[],
+
       search: '',
       disablePage: false,
-      total: 0,
-      pageSize: 5,
-      currentPage: 1,
+      total: 20,
+      pageSize: 10,
+      page: 1,  //当前页
 
-      indexTable: [{
-      }],
-      tabTable: [{
-      }],
-      tableData: [{
-        equipName: '供应商1',
-        equipType: 1,
-        equipBrand: '供应商1联系人1',
-        equipId: '13212398765',
-        equipInsLocation: '地址1',
-        status:'已发布',
-        action:'按钮',
-        machineTime:"2021-11-10 17:00:00",
-        machineRes:"通过",
-        artificialPeo:"老总",
-        artificialTime:"2021-11-10 19:00:00",
-        artificialRes:"通过"
-      }, {
-        equipName: '供应商2',
-        equipType: 2,
-        equipBrand: '供应商2联系人1',
-        equipId: '13212398765',
-        equipInsLocation: '地址2',
-        status:'审核中',
-        action:'按钮',
-        machineTime:"2021-11-10 17:00:00",
-        machineRes:"通过",
-        artificialPeo:"老总",
-        artificialTime:"2021-11-10 19:00:00",
-        artificialRes:"通过"
-      },{
-        equipName: '供应商3',
-        equipType: 3,
-        equipBrand: '供应商3联系人1',
-        equipId: '13212398765',
-        equipInsLocation: '地址3',
-        status:'未审核',
-        action:'按钮',
-        machineTime:"2021-11-10 17:00:00",
-        machineRes:"通过",
-        artificialPeo:"老总",
-        artificialTime:"2021-11-10 19:00:00",
-        artificialRes:"通过"
-      },{
-        equipName: '供应商4',
-        equipType: 4,
-        equipBrand: '供应商4联系人1',
-        equipId: '13212398765',
-        equipInsLocation: '地址4',
-        status:'已发布',
-        action:'按钮',
-        machineTime:"2021-11-10 17:00:00",
-        machineRes:"通过",
-        artificialPeo:"老大",
-        artificialTime:"2021-11-10 19:00:00",
-        artificialRes:"通过"
-      },{
-        equipName: '供应商5',
-        equipType: 5,
-        equipBrand: '供应商5联系人1',
-        equipId: '13212398765',
-        equipInsLocation: '地址5',
-        status:'已发布',
-        action:'按钮',
-        machineTime:"2021-11-10 17:00:00",
-        machineRes:"通过",
-        artificialPeo:"主任",
-        artificialTime:"2021-11-10 19:00:00",
-        artificialRes:"通过"
-      }],
-      dialogVisible: false,
+      //搜索框默认值
       inputTitle: '',
-      inputState: '',
+      inputType: '',
+      inputBrand: '',
       activeName: 'first',
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4,
+
       isSearch: true,
       toBeSearched: [],
     }
   },
+
+  mounted() {
+    //初始全查
+    this.fetchData(this.page,this.pageSize)
+    //初始读取全部设备类型名称
+    this.fetchDev()
+    this.selectBrandName()
+  },
+
   methods: {
-    reflash(){
-      //刷新
-      this.$router.go(0);
-    },
-    supQuery(){
-      //  查询
-      let postData = this.qs.stringify({
-        equipName: this.search
-      });
+    //读表
+    fetchData(page,pageSize){
+      let postData={
+        page: page,
+        pageSize: pageSize
+      };
       this.axios({
-        method: 'post',
-        url: '/supplierList',
-        data: postData
+        method: 'get',
+        url: 'http://localhost:8080/deviceInfo/getAll',
+        params: postData
       }).then(response =>
       {
-        this.tableData = response.data;
-        this.disablePage = true;
+
+        this.tableData = response.data.data
+        this.total = response.data.total
       }).catch(error =>
       {
         console.log(error);
       });
+
     },
-    equipUpdate(){
+
+    fetchDev() {
+      //读取设备类型
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/deviceType/getAllName',
+      }).then(response => {
+        let optionsList = [];
+        for (let i = 0; i < response.data.length; i++) {
+          console.log(Object.values(response.data)[i]);
+          let optionx = {
+            id: i,
+            name: Object.values(response.data)[i],
+          };
+          optionsList.push(optionx);
+        }
+        console.log(typeof optionsList)
+        console.log(optionsList)
+        this.optionsOfDev = optionsList;
+        console.log(this.optionsOfDev)
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+    selectBrandName(){
+      let postData={
+        deviceTypeName:this.inputType
+      };
+      //读取品牌
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/supplier/getAllName',
+        params: postData
+      }).then(response => {
+        console.log("供应商")
+        console.log(response.data)
+        let optionsList = [];
+        for(let i=0;i<response.data.length;i++){
+          let optionx={
+            id:i,
+            name:Object.values(response.data)[i],
+          };
+          optionsList.push(optionx)
+        }
+        console.log(optionsList)
+        let optionsList1 = Array.from(new Set(optionsList))
+        console.log(optionsList1)
+        this.optionsOfBrand = optionsList;
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+
+    reflash(){
+      //刷新
+      this.$router.go(0);
+    },
+    supQuery() {
+      //查询
+      let postData = {
+        deviceName: this.inputTitle,
+        deviceTypeName: this.inputType,
+        deviceBrand: this.inputBrand,
+        page: this.page,
+        pageSize: this.pageSize,
+      };
+      console.log(postData)
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/deviceInfo/getBy',
+        params: postData
+      }).then(response => {
+        this.tableData = response.data.data;
+        this.total = response.data.total
+        console.log(response.data);
+        console.log("查询成功");
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+
+    equipUpdate(index, row){
       //  修改，跳转到修改页面
-      this.$router.replace({path: '/supplierList/inform'})
+      sessionStorage.setItem('deviceNumber',row.deviceNumber);
+      sessionStorage.setItem('deviceSort',row.deviceSort);
+      sessionStorage.setItem('deviceBrand',row.deviceBrand);
+      sessionStorage.setItem('deviceTypeName',row.deviceTypeName);
+      sessionStorage.setItem('deviceModel',row.deviceModel);
+      sessionStorage.setItem('installDate',row.installDate);
+      sessionStorage.setItem('installAddress',row.installAddress);
+      sessionStorage.setItem('deviceStatus',row.deviceStatus);
+      sessionStorage.setItem('longitude',row.longitude);
+      sessionStorage.setItem('latitude',row.latitude);
+
+      this.$router.replace({path: '/home/equipmentList/equipmentUpdate'})
     },
     equipAdd(){
       //  新增，跳转到新增页面
-      this.$router.replace({path: '/supplierList/inform'})
+      this.$router.replace({path: '/home/equipmentList/equipmentAdd'})
     },
     equipDel(index, row){
       //  删除
@@ -396,34 +306,21 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let postData = this.qs.stringify({
-          equipType: row.equipType,
-        });
+        let postData = {
+          deviceNumber: row.deviceNumber,
+        };
         this.axios({
           method: 'post',
-          url:'/delete',
-          data:postData
+          url:'http://localhost:8080/deviceInfo/delete',
+          params:postData
         }).then(response =>
         {
-          this.getPages();
-          this.currentPage = 1;
-          this.axios.post('/page').then(response =>
-          {
-            this.tableData = response.data;
-          }).catch(error =>
-          {
-            console.log(error);
-          });
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
           console.log(response);
+          this.reflash();
         }).catch(error =>
         {
           console.log(error);
         });
-
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -431,55 +328,13 @@ export default {
         });
       });
     },
-    getPages() {
-      this.axios.post('/rows').then(response =>
-      {
-        this.total = response.data;
-      }).catch(error =>
-      {
-        console.log(error);
-      });
-    },
-    clickEventDialog(row){
-      this.dialogVisible = true;
-      console.log(row.creater)
-      this.creater=row.creater
-      this.createTime=row.createTime
-      this.machineTime=row.machineTime
-      this.machineRes=row.machineRes
-      this.artificialPeo=row.artificialPeo
-      this.artificialTime=row.artificialTime
-      this.artificialRes=row.artificialRes
-    },
+
     resetForm() {
       this.inputTitle='';
-      this.inputState='';
+      this.inputType ='';
+      this.inputBrand='';
     },
-    searchFile(){
-      if (this.isSearch) {
-        this.toBeSearched = this.tableData
-        this.isSearch = false
-      }
-      let data1 = this.toBeSearched.filter(data => {
-        return Object.keys(data).some(key => {
-          return String(data[key]).toLowerCase().indexOf(this.inputTitle)> -1
-        })
-      })
-      this.tableData = data1.filter(data1 => {
-        return Object.keys(data1).some(key => {
-          return String(data1[key]).toLowerCase().indexOf(this.inputState)> -1
-        })
-      })
-    },
-    headerStyle({rowIndex}) {
-      if (rowIndex === 0) {
-        return 'line-height:10px; background: white; '
-      } else if (rowIndex === 1){
-        return 'line-height:10px; background: white; border: 0'
-      }
-      else
-        return ''
-    },
+
     headerStyle2({rowIndex}) {
       if (rowIndex === 0) {
         return 'border: 1px solid lightgray'
@@ -487,24 +342,31 @@ export default {
       else
         return ''
     },
-    cellStyle(){
-      return 'border: 0'
-    },
+
     cellStyle2(){
       return 'border: 1px solid lightgray; padding: 0'
     },
+
     handleClick(tab, event) {
       console.log(tab, event);
     },
+
     handleSizeChange(val) {
+      //更改每页最大数量
+      this.page = 1;
+      this.pageSize = val;
+      this.supQuery(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
+      //document.getElementById('testClick').click()
     },
     handleCurrentChange(val) {
+      //换页
+      this.page = val;
+      this.supQuery(val,this.pageSize)
       console.log(`当前页: ${val}`);
+      //document.getElementById('testClick').click()
     },
-    handleChange(value) {
-      console.log(value);
-    }
+
   }
 
 }
@@ -586,22 +448,11 @@ export default {
 }
 .block{
   background: white;
-  height: 20px;
+  height: 40px;
   padding-top: 30px;
   padding-right: 10px;
   /*padding-bottom: 10px;*/
   text-align: right;
 }
 
-.yifabu{
-  color: limegreen;
-}
-
-.weishenheyibohui{
-  color: yellow;
-}
-
-.shenhezhong{
-  color: red;
-}
 </style>

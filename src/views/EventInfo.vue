@@ -139,7 +139,7 @@
                   align="center"
                   show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <el-button class="eventInfoDetailButt" type="text" @click="eventInfoDetail(scope.$index, scope.row)">查看详情</el-button>
+                  <el-button class="eventInfoDetailButt" type="success" @click="eventInfoDetail(scope.$index, scope.row)">查看详情</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -177,7 +177,7 @@ export default {
       eventInfoOccurenceTime:"",
       eventInfoStatus:"",
       eventInfoResource:"",
-      alarmFrequency:"",
+      alarmFrequencey:"",
       eventInfoDescription:"",
       eventLevel:'',
       deviceTypeName:"",
@@ -222,10 +222,9 @@ export default {
         params: postData
       }).then(response =>
       {
-        console.log(response.data.data[0]);
+        // console.log(response.data.data[0].alarmFrequencey);
         this.tableData = response.data.data;
         this.total=response.data.total;
-        // this.eventSum=response.data.total;
       }).catch(error =>
       {
         console.log(error);
@@ -248,37 +247,42 @@ export default {
       });
     },
 
-    reflash(){
-      //刷新
+    //刷新
+    reFlash(){
       this.$router.go(0);
-      // console.log(this.tableData);
     },
+    //查询
     eveConfQuery(){
-      //  查询
-      // let postData = this.qs.stringify({
-      //   eveConfName: this.search
-      // });
-      // this.axios({
-      //   method: 'post',
-      //   url: '/supplierList',
-      //   data: postData
-      // }).then(response =>
-      // {
-      //   this.tableData = response.data;
-      //   this.disablePage = true;
-      // }).catch(error =>
-      // {
-      //   console.log(error);
-      // });
+      let postData = {
+        page:this.page,
+        pageSize:this.pageSize,
+        eventInfoId:this.inputId,
+        eventName: this.inputName,
+      };
+      console.log(postData)
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/eventInfo/getAll',
+        params: postData
+      }).then(response =>
+      {
+        this.tableData = response.data.data;
+        this.total=response.data.total
+        console.log(response.data);
+        console.log("查询成功");
+      }).catch(error =>
+      {
+        console.log(error);
+      });
     },
+    //  修改，跳转到详情页面
     eventInfoDetail(index, row){
-      //  修改，跳转到详情页面
       console.log(index,row)
       sessionStorage.setItem('eventInfoId',row.eventInfoId);
       sessionStorage.setItem('eventName',row.eventName);
       sessionStorage.setItem('eventInfoStatus',row.eventInfoStatus);
       sessionStorage.setItem('eventInfoResource',row.eventInfoResource);
-      sessionStorage.setItem('alarmFrequency',row.alarmFrequency);
+      sessionStorage.setItem('alarmFrequency',row.alarmFrequencey);
       sessionStorage.setItem('eventInfoOccurenceTime',row.eventInfoOccurenceTime);
       sessionStorage.setItem('eventInfoDescription',row.eventInfoDescription);
       sessionStorage.setItem('eventLevel',row.eventLevel);
@@ -287,31 +291,17 @@ export default {
       sessionStorage.setItem('deviceTypeName',row.deviceTypeName);
       sessionStorage.setItem('deviceStatus',row.deviceStatus);
       sessionStorage.setItem('addressDescription',row.addressDescription);
+      sessionStorage.setItem('updateUser',row.updateUser);
+
+      // console.log("告警次数："+sessionStorage.getItem('alarmFrequency'))
       this.$router.replace({path: '/home/eventInfo/eventInfoDetail'})
     },
-
+    //重置
     resetForm() {
-      //重置
       this.inputId='';
       this.inputName='';
     },
 
-    searchFile(){
-      if (this.isSearch) {
-        this.toBeSearched = this.tableData
-        this.isSearch = false
-      }
-      let data1 = this.toBeSearched.filter(data => {
-        return Object.keys(data).some(key => {
-          return String(data[key]).toLowerCase().indexOf(this.inputId)> -1
-        })
-      })
-      this.tableData = data1.filter(data1 => {
-        return Object.keys(data1).some(key => {
-          return String(data1[key]).toLowerCase().indexOf(this.inputName)> -1
-        })
-      })
-    },
     headerStyle({rowIndex}) {
       if (rowIndex === 0) {
         return 'line-height:10px; background: white; '
@@ -341,13 +331,14 @@ export default {
       //更改每页最大数量
       this.page = 1;
       this.pageSize = val;
-      this.fetchData(this.page,this.pageSize)
+      this.eveConfQuery(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
     },
+    //换页
     handleCurrentChange(val) {
-      //换页
+
       this.page = val;
-      this.fetchData(val,this.pageSize)
+      this.eveConfQuery(val,this.pageSize)
       console.log(`当前页: ${val}`);
     },
     handleChange(value) {
@@ -434,7 +425,7 @@ export default {
 }
 .block{
   background: white;
-  height: 20px;
+  height: 40px;
   padding-top: 30px;
   padding-right: 10px;
   /*padding-bottom: 10px;*/
@@ -457,18 +448,21 @@ export default {
 }
 #div-1-eveDealed{
   background-image: url("../assets/后台-已处理.png");
+  background-color: rgb(103,194,58);
 }
 #div-1-eveDealing{
   background-image: url("../assets/后台-待处理.png");
+  background-color: rgb(230,162,60);
 }
 #div-1-eveUndealed{
   background-image: url("../assets/后台-未处理.png");
+  background-color: rgb(245,108,108);
 }
 .div-2{
   height: 40px;
   position: absolute;
   top:30%;
-  right:11%;
+  right:8%;
   color: white;
   font-size: 18px;
 }
