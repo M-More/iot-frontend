@@ -1,14 +1,14 @@
 <template>
   <div class="header">
     <div class="welcome">
-      <div class="selection"
+      <div class="selection">
         <el-button icon="el-icon-s-unfold" class="foldbutton"></el-button>
       </div>
 
       <div class="welcome-name">
         <el-row :gutter="10">
           <el-col :span="7">
-            <el-button style="text-align: center" type="success" @click="changeHtml">跳转</el-button>
+            <el-button style="text-align: center" type="success" @click="changeHtml">大屏展示</el-button>
           </el-col>
           <el-col :span="6">
             <p class="welcome-name-content">欢迎登录：</p>
@@ -69,7 +69,7 @@
     },
     methods:{
       changeHtml(){
-        this.$router.replace({path: '/BigPingF'})
+        window.open('http://localhost:8082')
       },
       setUserNameText(){
         document.getElementById("userNameText").innerText=sessionStorage.getItem("userName");

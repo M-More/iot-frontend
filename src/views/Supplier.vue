@@ -17,7 +17,7 @@
               <el-col style="font-weight: 700" :span="8">供应商名称</el-col>
               <el-col style="font-weight: 700" :span="8">供应商编码</el-col>
             </el-row>
-            <el-row class="supQuire-row-2">
+            <el-row class="supQuire-row-2" :gutter="20">
               <!--查询内容输入-->
               <el-col :span="8">
                 <el-form-item>
@@ -27,7 +27,6 @@
               <el-col :span="8">
                 <el-form-item>
                   <el-input v-model="inputState" placeholder="请输入供应商编码,格式为GYS_数字，如GYS_001">
-<!--                    <template slot="prepend">GYS_</template>-->
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -46,23 +45,13 @@
     <!--下方列表信息部分-->
     <div class="detailList">
       <el-row>
-        <el-col :span="8">
-          <p>列表</p>
-        </el-col>
-        <el-col :span="8" >
-          <el-button class="el-button1" type="success" @click="supAdd">新增</el-button>
-        </el-col>
-        <el-col :span="8" >
-          <el-button class="el-button1" type="success" @click="reflash">刷新</el-button>
-        </el-col>
+          <p>供应商信息
+            <el-button class="el-button1" style="float: right;margin-right: 20px;margin-top: 5px" type="success" @click="supAdd">新增</el-button>
+          </p>
       </el-row>
-
+    <!--供应商信息显示栏-->
       <div>
-        <el-row>
-          <p>供应商信息</p>
-        </el-row>
-
-        <el-tabs style="background: white; line-height: 10px" v-model="activeName" type="card" @tab-click="handleClick">
+        <el-tabs style="background: white; line-height: 10px;padding-bottom:0px" v-model="activeName" type="card" @tab-click="handleClick">
             <template>
               <el-table
                   class="el-table-list"
@@ -74,38 +63,33 @@
                 <el-table-column
                     prop="supplierName"
                     label="供应商名称"
-                    width="100px"
                 >
                 </el-table-column>
                 <el-table-column
                     prop="supplierCode"
                     label="供应商编码"
-                    width="100px"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
                     prop="contactName"
                     label="联系人"
-                    width="150px"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
                     prop="contactTel"
                     label="电话"
-                    width="150px"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
                     prop="address"
                     label="地址"
-                    width="150px"
                     show-overflow-tooltip>
                 </el-table-column>
 
                 <el-table-column
                     prop="action"
                     label="操作"
-                    width="150px"
+                    align="center"
                     show-overflow-tooltip>
                   <template slot-scope="scope">
                     <el-button class="supUpdateButt" type="text" @click="supUpdate(scope.$index,scope.row)">修改信息</el-button>
@@ -116,22 +100,22 @@
             </template>
 
         </el-tabs>
-      </div>
+        <!--分页-->
+        <div class="block">
+          <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="page"
+              :page-sizes="[10, 20, 50]"
+              :page-size="pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total=this.total>
+          </el-pagination>
+        </div>
 
-      <!--分页-->
-      <div class="block">
-        <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="page"
-            :page-sizes="[1,2,3, 10, 20, 50]"
-            :page-size="pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total=this.total>
-        </el-pagination>
       </div>
-
     </div>
+
   </div>
 </template>
 
@@ -192,19 +176,19 @@ export default {
         console.log(error);
       });
     },
+    //刷新
     reflash(){
-      //刷新
       this.$router.go(0);
     },
+    //  查询
     supQuery(){
-      //  查询
       let postData = {
         supplierName: this.inputTitle,
         supplierCode: this.inputState,
         page:this.page,
         pageSize:this.pageSize,
       };
-      console.log("postData是")
+      console.log("postData为")
       console.log(postData)
       console.log("postData成功")
       this.axios({
@@ -213,21 +197,26 @@ export default {
         params: postData
       }).then(response =>
       {
-        this.tableData= response.data.data;
-        this.total=response.data.total
-        // console.log("response");
-        // console.log(response);
-        // console.log("查询成功");
-        // console.log("tableData");
-        // console.log(this.tableData);
-        // console.log("tableData查询成功");
-      }).catch(error =>
+        //分页器处在非第一页时，依旧能保证查到所有的数据
+        if(response.data.data.length==0){
+          this.page-=1
+          if(this.page==0){
+            this.page=1
+            this.tableData= response.data.data;
+            this.total=response.data.total
+          }
+          this.supQuery()
+        }else{
+          this.tableData= response.data.data;
+          this.total=response.data.total
+        }
+        }).catch(error =>
       {
         console.log(error);
       });
     },
+    //  修改，跳转到修改页面
     supUpdate(index, row){
-      //  修改，跳转到修改页面
       console.log(index,row)
       sessionStorage.setItem('supplierName',row.supplierName);
       sessionStorage.setItem('supplierCode',row.supplierCode);
@@ -237,12 +226,12 @@ export default {
       sessionStorage.setItem('note',row.note);
       this.$router.replace({path: '/home/supplierList/supplierUpdate'})
     },
+    //  新增，跳转到新增页面
     supAdd(){
-      //  新增，跳转到新增页面
       this.$router.replace({path: '/home/supplierList/supplierAdd'})
     },
+    //  删除
     supDel(index, row){
-      //  删除
       console.log(index, row);
       this.$confirm('删除操作, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -252,6 +241,7 @@ export default {
         let postData = {
           supplierCode: row.supplierCode,
         };
+        //回传数据
         this.axios({
           method: 'post',
           url:'http://localhost:8080/supplier/delete',
@@ -271,6 +261,7 @@ export default {
         });
       });
     },
+    //获取页面数据
     getPages() {
       this.axios.post('/rows').then(response =>
       {
@@ -311,6 +302,7 @@ export default {
         })
       })
     },
+    // 页面尺寸动态调整
     headerStyle({rowIndex}) {
       if (rowIndex === 0) {
         return 'line-height:10px; background: white; '
@@ -336,15 +328,15 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
     },
+    //更改每页最大数量
     handleSizeChange(val) {
-      //更改每页最大数量
       this.page = 1;
       this.pageSize = val;
       this.supQuery(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
     },
+    //换页
     handleCurrentChange(val) {
-      //换页
       this.page = val;
       this.supQuery(val,this.pageSize)
       console.log(`当前页: ${val}`);
@@ -382,7 +374,8 @@ export default {
   border-top: solid 1px #F0EEEE;
 }
 .supList .el-dialog__body {
-  height: 300px;
+
+  height: 30px;
   font-size: 14px;
 }
 .supList .el-row{
@@ -417,9 +410,10 @@ export default {
 
 
 .detailList{
-  height: 450px;
+  /*height: 450px;*/
   padding-top: 5px;
   padding-left: 5px;
+  padding-bottom: 20px;
   border-radius: 20px;
   background: white;
   margin-top: 20px;
@@ -438,6 +432,10 @@ export default {
   padding-right: 10px;
   /*padding-bottom: 10px;*/
   text-align: right;
+}
+
+.s el-row{
+  height: 10px;
 }
 
 </style>

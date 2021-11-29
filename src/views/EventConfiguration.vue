@@ -1,6 +1,6 @@
 <template>
   <div class="eveConfList">
-    <!--显示当前页面的路径，快速返回之前的任意页面。-->
+    <!--面包屑：显示当前页面的路径，快速返回首页。-->
     <el-breadcrumb separator="/" class="eveInfoBreadcrumb">
       <el-breadcrumb-item :to="{ path: '/' }">事件配置列表</el-breadcrumb-item>
       <el-breadcrumb-item><a href="/">信息列表</a></el-breadcrumb-item>
@@ -20,13 +20,12 @@
             <el-row class="eveConfQuire-row-2">
               <!--查询内容输入-->
               <el-col :span="8">
-                <el-form-item style="margin-right: 20px">
+                <el-form-item>
                   <el-input v-model="inputTitle" placeholder="请输入事件名称"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item>
-<!--                  <el-input v-model="inputLevel" placeholder="请输入事件级别"></el-input>-->
                   <el-select v-model="inputLevel"
                              placeholder="选择事件级别">
                     <el-option
@@ -38,6 +37,7 @@
                   </el-select>
                 </el-form-item>
               </el-col>
+              <!--按钮：查询与重置-->
               <el-col :span="8" >
                 <el-form-item style="text-align: right;">
                   <el-button  type="warning" @click="eveConfQuery">查询</el-button>
@@ -52,15 +52,18 @@
 
     <!--下方列表信息部分-->
     <div class="detailList">
+      <!--表头与新增按钮-->
       <el-row>
           <p>事件配置信息
           <el-button  type="success" @click="eveConfAdd" style="float:right; margin-right: 18px">新增</el-button>
           </p>
       </el-row>
 
+      <!--表格内容-->
       <div>
         <el-tabs style="background: white; line-height: 10px" v-model="activeName" type="card" @tab-click="handleClick">
             <template>
+              <!--表头-->
               <el-table
                   class="el-table-list"
                   :data="tableData"
@@ -97,8 +100,6 @@
               </el-table>
             </template>
         </el-tabs>
-
-
       </div>
 
       <!--分页-->
@@ -123,8 +124,10 @@ export default {
   name: "EventConfiguration",
   data() {
     return {
+      //下拉框
       options:[{value:'普通', label:"普通"},
         {value:'重要', label:"重要"}],
+      //属性
       eventName:"",
       eventLevel:"",
       deviceTypeName:"",
@@ -132,28 +135,23 @@ export default {
       eveRule:"",
       eveConfCreateTime:'',
       eveConfUpdateTime:'',
-
+      //表格内容
       tableData: [],
-      search: '',
-      disablePage: false,
+      //分页：总数、每页数量、当前页
       total: 20,
       pageSize: 10,
       page: 1,
 
-      indexTable: [{}],
-      tabTable: [{}],
-
+      //二次确认弹窗
       dialogVisible: false,
+      //查询字段：事件名称、事件级别
       inputTitle: '',
       inputLevel: '',
       activeName: 'first',
-
-
-      isSearch: true,
-      toBeSearched: [],
     }
   },
   mounted() {
+    //生命周期
     this.fetchData(this.page,this.pageSize)
   },
   methods: {
@@ -170,7 +168,7 @@ export default {
         params: postData
       }).then(response =>
       {
-        console.log(response.data);
+        // console.log(response.data.data.length);
         this.tableData = response.data.data;
         this.total=response.data.total;
       }).catch(error =>
@@ -178,13 +176,12 @@ export default {
         console.log(error);
       });
     },
-    reflash(){
-      //刷新
+    //刷新
+    reFlash(){
       this.$router.go(0);
-      // console.log(this.tableData);
     },
+    //  查询
     eveConfQuery(){
-      //  查询
       let postData = {
         eventName:this.inputTitle,
         eventLevel: this.inputLevel,
@@ -198,17 +195,32 @@ export default {
         params: postData
       }).then(response =>
       {
-        this.tableData = response.data.data;
-        this.total=response.data.total
-        console.log(response.data);
-        console.log("查询成功");
+        if(response.data.data.length==0){
+          // 如果当页查询不到数据，则page-1（数据库中不存在或查询数据不够页数）
+          this.page-=1;
+          if(this.page==0){
+            //如果是在第一页查不到数据 => 数据库中不存在
+            //显示暂无数据
+            this.tableData = response.data.data;
+            this.total=response.data.total
+          }else{
+            //如果是在第2页之后查不到数据 => 查询数据不够页数
+            //递归查询前一页
+            this.eveConfQuery()
+          }
+        }else{
+          this.tableData = response.data.data;
+          this.total=response.data.total;
+          console.log(response.data);
+          console.log("查询成功");
+        }
       }).catch(error =>
       {
         console.log(error);
       });
     },
+    //  修改，跳转到修改页面
     eveConfUpdate(index, row){
-      //  修改，跳转到修改页面
       console.log(index,row)
       sessionStorage.setItem('eventConfigId',row.eventConfigId);
       sessionStorage.setItem('eventName',row.eventName);
@@ -242,12 +254,11 @@ export default {
         }).then(response =>
         {
           console.log(response);
-          this.reflash();
+          this.reFlash();
         }).catch(error =>
         {
           console.log(error);
         });
-
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -255,46 +266,12 @@ export default {
         });
       });
     },
-    getPages() {
-      this.axios.post('/rows').then(response =>
-      {
-        this.total = response.data;
-      }).catch(error =>
-      {
-        console.log(error);
-      });
-    },
-    clickEventDialog(row){
-      this.dialogVisible = true;
-      console.log(row.creater)
-      this.creater=row.creater
-      this.createTime=row.createTime
-      this.machineTime=row.machineTime
-      this.machineRes=row.machineRes
-      this.artificialPeo=row.artificialPeo
-      this.artificialTime=row.artificialTime
-      this.artificialRes=row.artificialRes
-    },
+    //重置
     resetForm() {
       this.inputTitle='';
       this.inputLevel='';
     },
-    searchFile(){
-      if (this.isSearch) {
-        this.toBeSearched = this.tableData
-        this.isSearch = false
-      }
-      let data1 = this.toBeSearched.filter(data => {
-        return Object.keys(data).some(key => {
-          return String(data[key]).toLowerCase().indexOf(this.inputTitle)> -1
-        })
-      })
-      this.tableData = data1.filter(data1 => {
-        return Object.keys(data1).some(key => {
-          return String(data1[key]).toLowerCase().indexOf(this.inputLevel)> -1
-        })
-      })
-    },
+    //样式函数*4
     headerStyle({rowIndex}) {
       if (rowIndex === 0) {
         return 'line-height:10px; background: white; '
@@ -320,23 +297,19 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
     },
+    //更改每页最大数量
     handleSizeChange(val) {
-      //更改每页最大数量
       this.page = 1;
       this.pageSize = val;
-
       this.eveConfQuery(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
     },
+    //换页
     handleCurrentChange(val) {
-      //换页
       this.page = val;
       this.eveConfQuery(val,this.pageSize)
       console.log(`当前页: ${val}`);
     },
-    handleChange(value) {
-      console.log(value);
-    }
   }
 }
 </script>
@@ -388,7 +361,7 @@ export default {
   font-size: 18px;
   border-bottom: 1px solid lightgray;
 }
-/*查询不分内容：字段、信息、按钮*/
+/*查询部分内容：字段、信息、按钮*/
 .eveConfQuire-row-1{
   text-align: left !important;
   padding-bottom: -8px;
@@ -415,6 +388,7 @@ export default {
   line-height: 50px;
   font-size: 18px;
 }
+/*分页*/
 .block{
   background: white;
   height: 40px;

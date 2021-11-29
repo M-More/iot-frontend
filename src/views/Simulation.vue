@@ -19,43 +19,12 @@
               </el-form-item>
               <el-form-item label="告警名称" prop="alarmName">
                               <el-input v-model="form.alarmName" placeholder="请输入告警名称"></el-input>
-<!--                <el-select v-model="form.eventLevel"-->
-<!--                           placeholder="选择事件级别">-->
-<!--                  <el-option-->
-<!--                      v-for="item in options"-->
-<!--                      :key="item.value"-->
-<!--                      :label="item.label"-->
-<!--                      :value="item.value">-->
-<!--                  </el-option>-->
-<!--                </el-select>-->
               </el-form-item>
               <el-form-item label="来源" prop="eventInfoResource">
                               <el-input v-model="form.eventInfoResource" placeholder="请输入来源"></el-input>
-<!--                <el-select v-model="form.deviceTypeName"-->
-<!--                           placeholder="选择设备类型"-->
-<!--                           @change="selectDevName"-->
-<!--                >-->
-<!--                  <el-option-->
-<!--                      v-for="item in optionsOfDev"-->
-<!--                      :key="item.id"-->
-<!--                      :label="item.name"-->
-<!--                      :value="item.name">-->
-<!--                  </el-option>-->
-<!--                </el-select>-->
               </el-form-item>
               <el-form-item label="描述" prop="eventInfoDescription">
                               <el-input v-model="form.eventInfoDescription"></el-input>
-<!--                <el-select v-model="form.alarmName"-->
-<!--                           multiple-->
-<!--                           collapse-tags-->
-<!--                           placeholder="选择描述">-->
-<!--                  <el-option-->
-<!--                      v-for="item in optionsOfRul"-->
-<!--                      :key="item.id"-->
-<!--                      :label="item.name"-->
-<!--                      :value="item.name">-->
-<!--                  </el-option>-->
-<!--                </el-select>-->
               </el-form-item>
               <br>
             </el-form>
@@ -177,7 +146,6 @@ export default {
             alarmName: this.form.alarmName,
             eventInfoResource: this.form.eventInfoResource,
             eventInfoDescription: this.form.eventInfoDescription,
-            // createUser:sessionStorage.getItem('userName')
           };
           console.log(postData)
           this.axios({
@@ -198,10 +166,6 @@ export default {
           {
             console.log(error);
           });
-
-          // this.reflash()
-          // alert('保存成功！');
-          // this.$router.replace('/home/eventConfList');
         } else {
           console.log('error submit!!');
           return false;

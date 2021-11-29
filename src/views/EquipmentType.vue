@@ -17,7 +17,7 @@
               <el-col style="font-weight: 700" :span="8">设备类型名称</el-col>
               <el-col style="font-weight: 700" :span="8">设备类型编号</el-col>
             </el-row>
-            <el-row class="equipTypeQuire-row-2">
+            <el-row class="equipTypeQuire-row-2" :gutter="20">
               <!--查询内容输入-->
               <el-col :span="8">
                 <el-form-item>
@@ -26,10 +26,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item>
-                  <el-input v-model="inputCode" placeholder="请输入设备类型编号"
-                    onKeyUp="value=value.replace(/[\D]/g,'')">
-                    <template slot="prepend">SBLX_</template>
-                  </el-input>
+                  <el-input v-model="inputCode" placeholder="请输入设备类型编号"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8" >
@@ -76,6 +73,7 @@
                 <el-table-column
                     prop="action"
                     label="操作"
+                    align="center"
                     show-overflow-tooltip>
                   <template slot-scope="scope">
                     <el-button class="equipTypeUpdateButt" type="text" @click="equipTypeUpdate(scope.$index, scope.row)">修改信息</el-button>
@@ -108,35 +106,37 @@ export default {
   name: "EquipmentType",
   data() {
     return {
+      // 列表的初始参数 默认值为'' 提供给prop
       deviceTypeName:"",
       deviceTypeCode:"",
       deviceNote:"",
       deviceCreateTime:"",
       deviceUpdateTime:"",
-
+      // 列表的初始参数 默认值为[] 提供给接收函数
       tableData: [],
-      search: '',
-      disablePage: false,
+      // 分页器的初始参数 提供给mounted()的this.fetchData()
       total: 0,
+      // 初始显示10条数据
       pageSize: 10,
+      // 初始显示第1页数据
       page: 1,
 
-
+      //搜索框默认值
       inputTitle: '',
       inputCode: '',
+      //标签页限制表头高度
       activeName: 'first',
 
-      isSearch: true,
-      toBeSearched: [],
     }
   },
   mounted() {
+    //初始加载数据
     this.fetchData(this.page,this.pageSize)
   },
-
   methods: {
-    //读表
+    //读数据表
     fetchData(page,pageSize){
+      // page pageSize必填项
       let postData={
         page: page,
         pageSize: pageSize
@@ -148,6 +148,7 @@ export default {
         params: postData
       }).then(response =>
       {
+        //传入表格
         console.log(response.data.data);
         this.tableData = response.data.data;
         this.total=response.data.total;
@@ -156,33 +157,42 @@ export default {
         console.log(error);
       });
     },
+
     reflash(){
+      //刷新页面
       this.$router.go(0);
     },
+
     equipTypeQuery() {
       //  查询
-      let postData;
-      console.log(postData)
-      if (this.inputCode !== '') {
-        postData = {
-          deviceTypeName: this.inputTitle,
-          deviceTypeCode: "SBLX_" + this.inputCode,
-        }
+      let pageNew;
+      // 只要上方输入框的值有任意改变的话 都从page=1开始查起
+      // total/pageSize时会出现分页器点击选项（不止一页） 大于1的传当前this.page值
+      if (this.inputTitle !== sessionStorage.getItem('inputTitle') ||
+          this.inputCode !== sessionStorage.getItem('inputCode') ||
+          (sessionStorage.getItem('total')/this.pageSize) <=1
+          // eslint-disable-next-line no-empty
+      ){
+        pageNew = 1
       }else {
-        postData = {
-          deviceTypeName: this.inputTitle,
-          deviceTypeCode: this.inputCode,
-        }
+        pageNew = this.page
       }
+      //输入框里的值和 page，pageSize
+     let postData = {
+       deviceTypeName: this.inputTitle,
+       deviceTypeCode: this.inputCode,
+       page: pageNew,
+       pageSize: this.pageSize,
+     }
         this.axios({
           method: 'get',
-          url: 'http://localhost:8080/deviceType/getBy',
+          url: 'http://localhost:8080/deviceType/getPageBy',
           params: postData
         }).then(response => {
-          console.log("返回")
-          console.log(response)
-          this.tableData = response.data
-          this.total = response.data.length
+          this.tableData = response.data.data;
+          this.total = response.data.total
+          //重点：得把total保存下来 给equipQuery()的pageNew比较使用
+          sessionStorage.setItem('total', response.data.total);
         }).catch(error => {
           console.log(error);
         });
@@ -234,10 +244,11 @@ export default {
     },
 
     resetForm() {
+      // 重置输入框的值
       this.inputTitle='';
       this.inputCode='';
     },
-
+    //表格边框样式
     headerStyle2({rowIndex}) {
       if (rowIndex === 0) {
         return 'border: 1px solid lightgray'
@@ -245,7 +256,7 @@ export default {
       else
         return ''
     },
-
+    //表格边框样式
     cellStyle2(){
       return 'border: 1px solid lightgray; padding: 0'
     },
@@ -263,8 +274,15 @@ export default {
     handleCurrentChange(val) {
       //换页
       this.page = val;
-      // this.equipTypeQuery(this.page,this.pageSize)
-      this.fetchData(val,this.pageSize)
+      if(this.inputTitle === '' && this.inputBrand === '' && this.inputLevel === ''){
+        //全空默认全传
+        this.fetchData(this.page,this.pageSize)
+      }else{
+        //模糊查询
+        this.equipTypeQuery(this.page,this.pageSize)
+      }
+      sessionStorage.setItem('inputTitle',this.inputTitle);
+      sessionStorage.setItem('inputCode',this.inputCode);
       console.log(`当前页: ${val}`);
     },
   }

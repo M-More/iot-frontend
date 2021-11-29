@@ -203,7 +203,6 @@
       </el-row>
     </div>
 
-
   </div>
 </template>
 
@@ -212,6 +211,7 @@ export default {
   name: "EventInfoDetail",
   data() {
     return{
+      //属性：事件、设备、日志
       eventInfoId:"",
       eventName:"",
       eventInfoStatus:"",
@@ -235,18 +235,21 @@ export default {
       staff:"",
       action:"",
 
+      //按钮显示属性
       orderBuVis:false,
       dealBuVis:false,
       dealBuAble:true,
+      //输入框只读属性
       readonly: true,
+      //列表内容*2
       tableData: [],
       logTableData:[],
-
+      //分页
       total: 20,
       pageSize: 10,
       page: 1,
+      //处理意见弹窗
       dialogVisible: false,
-
       dealComment:'',
     }
   },
@@ -255,6 +258,7 @@ export default {
     this.fetchLog()
   },
   methods: {
+    //缓存读取事件与设备信息，同时根据事件状态决定三个按钮的显示与否
     loadData(){
       this.eventInfoId=sessionStorage.getItem('eventInfoId')
       this.eventName=sessionStorage.getItem('eventName')
@@ -300,10 +304,11 @@ export default {
       console.log(sessionStorage.getItem('userName'))
       console.log(sessionStorage.getItem('updateUser'))
     },
-    //查看设备详情
+    //跳转查看设备详情
     deviceInfoDetail(){
       this.$router.replace({path: '/home/eventInfo/eventInfoDetail/eventInfoDeviceDetail'})
     },
+    // 读取数据库日志
     fetchLog(){
       let postData={
         eventInfoId:this.eventInfoId
@@ -386,7 +391,7 @@ export default {
       console.log(e);
       this.$forceUpdate();
     },
-
+    //样式函数
     headerStyle({rowIndex}) {
       if (rowIndex === 0) {
         return 'line-height:10px; background: white; '
@@ -422,6 +427,7 @@ export default {
       this.fetchData(val,this.pageSize)
       console.log(`当前页: ${val}`);
     },
+    //返回
     back() {
       this.$router.replace('/home/eventInfo')
     }

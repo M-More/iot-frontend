@@ -47,6 +47,7 @@
 export default {
   data(){
     return {
+      //以form形式回传
       form: {
         supplierName: sessionStorage.getItem('supplierName'),
         supplierCode: sessionStorage.getItem('supplierCode').slice(4),
@@ -56,7 +57,7 @@ export default {
         note: sessionStorage.getItem('note'),
         updateUser:sessionStorage.getItem('userName'),
       },
-
+      //校验规则
       rules: {
         supplierName: [
           { required: true, message: '请输入供应商名称', trigger: 'blur' },
@@ -69,9 +70,12 @@ export default {
           {
             validator:function(rule,value,callback){
               let regPone = null
-              let mobile = /^(1[3456789]\d{9})$/  //手机号
-              let tel = /^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/ // 座机
-              if (value !== null && value.charAt(0) === '0') { // charAt查找第一个字符方法，用来判断输入的是座机还是手机号
+              //手机号
+              let mobile = /^(1[3456789]\d{9})$/
+              // 座机
+              let tel = /^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/
+              // charAt查找第一个字符方法，用来判断输入的是座机还是手机号
+              if (value !== null && value.charAt(0) === '0') {
                 regPone = tel
               } else if (value !== null && value.charAt(0) !== '0') {
                 regPone = mobile
@@ -87,23 +91,6 @@ export default {
               } else {
                 callback()
               }
-              // if (!value) {
-              //   callback();
-              // } else {
-              //   const reg = /^(\d{3,4}-)?\d{7,8}$/;
-              //   const isTel = reg.test(value);
-              //   if (value.length < 10 || value.length > 13 || !isTel ) {//判断传真字符范围是在10到13
-              //     callback(new Error("座机或传真格式如:0376-12345678"));
-              //   } else {
-              //     callback();
-              //   }
-              // }
-
-              // if(/^1[34578]\d{9}$/.test(value) == false ){
-              //   callback(new Error("请输入正确的手机号"));
-              // }else{
-              //   callback();
-              // }
 
             },
             trigger: 'blur'
@@ -115,8 +102,8 @@ export default {
       }
     }
   },
+  //挂载
   mounted() {
-
     console.log(typeof sessionStorage.getItem('supplierCode'))
   },
   methods:{
@@ -139,11 +126,9 @@ export default {
       }).then(response =>
       {
         console.log(response);
-        console.log("14222222222222222222");
       }).catch(error =>
       {
         console.log(error);
-        console.log("1451111111111111111111111111111");
       });
       alert('保存成功！');
       console.log(postData);

@@ -52,15 +52,6 @@
               <el-form-item label="规则说明" prop="ruleDescription">
                 <el-input v-model="form.ruleDescription"></el-input>
               </el-form-item>
-
-              <el-form-item label="备注" class="el-form-item-full">
-                <el-input
-                    type="textarea"
-                    :rows="4"
-                    placeholder="请输入内容"
-                    v-model="form.mainText"
-                ></el-input>
-              </el-form-item>
             </el-form>
           </div>
         </div>
@@ -227,6 +218,7 @@ export default {
       optionsOfDev:[],
       optionsOfRul:[],
       postData:[],
+      //传入表单
       form: {
         alarmName: '',
         alarmCode:'',
@@ -235,6 +227,7 @@ export default {
         alarmStatus:'',
         ruleDescription:'',
       },
+      //必选规则
       rules: {
         alarmName: [
           { required: true, message: '请输入告警名称', trigger: 'blur' },
@@ -258,6 +251,7 @@ export default {
     }
   },
   mounted() {
+    //mounted()钩子函数初始渲染下拉框里的值
     this.fetchDev()
   },
   methods: {
@@ -282,10 +276,12 @@ export default {
         console.log(error);
       });
     },
-
+    // 保存
     save(formName) {
       this.$refs[formName].validate((valid) => {
+        // 必选框是否全部必选了
         if (valid) {
+          //一系列传参 Postman
           let postData = {
             alarmName: this.form.alarmName,
             alarmCode: "GJ_" + this.form.alarmCode,
@@ -302,18 +298,17 @@ export default {
             params: postData
           }).then(response => {
             console.log(response);
+            //根据范围代码对话框提示成功/失败
             if (response.data.code === 0) {
               alert('保存成功！');
             }
             if (response.data.code === 9) {
-              alert('添加失败');
+              alert('保存失败');
             }
-
           }).catch(error => {
             console.log(error);
           });
-
-          // alert('保存成功！');
+          // 页面跳转回告警页面
           this.$router.replace('/home/alertList');
         } else {
           console.log('error submit!!');
@@ -322,6 +317,7 @@ export default {
       });
     },
     back() {
+      // 页面跳转回告警页面
       this.$router.replace('/home/alertList')
     }
   }

@@ -62,7 +62,7 @@
                 </el-input>
               </el-form-item>
               <el-form-item label="维度" prop="latitude">
-                <el-input v-model="form.latitude" placeholder="维度"
+                <el-input v-model="form.latitude" placeholder="纬度"
                           onkeyup="if(!/^(\-|\+)?([0-8]?\d{1}\.\d{0,6}|90\.0{0,6}|[0-8]?\d{1}|90)$/.test(this.value))
                           {alert('纬度范围：-90~90（只支持保留小数点后六位）');this.value='';}">
                 </el-input>
@@ -237,6 +237,7 @@ export default {
       //读取品牌
       optionsOfBrand:[],
       postData:[],
+      //表单 给prop用
       form: {
         deviceSort: '',
         deviceBrand: '',
@@ -248,6 +249,7 @@ export default {
         latitude: '',
         installAddress: '',
       },
+      // 必填项规则
       rules: {
         deviceSort: [
           { required: true, message: '请选择种类', trigger: 'blur' },
@@ -277,7 +279,10 @@ export default {
     }
   },
   mounted() {
+    // 钩子函数初始渲染
+    //读取设备类型
     this.fetchDev()
+    //读取设备品牌
     this.selectBrandName()
   },
   methods: {
@@ -303,6 +308,7 @@ export default {
       });
     },
     selectBrandName(){
+      // 必填项
       let postData={
         deviceTypeName:this.form.deviceTypeName
       };
@@ -315,6 +321,7 @@ export default {
         console.log(response)
         let optionsList = [];
         for(let i=0;i<response.data.length;i++){
+          //遍历 缓存到List中
           let optionx={
             id:i,
             name:Object.values(response.data)[i],
@@ -322,18 +329,23 @@ export default {
           console.log(Object.values(response.data)[i])
           optionsList.push(optionx)
         }
+        // 统一替换
         console.log(optionsList)
+        // 去重
         let optionsList1 = Array.from(new Set(optionsList))
         console.log(optionsList1)
-        this.optionsOfBrand = optionsList;
+        this.optionsOfBrand = optionsList1;
       }).catch(error => {
         console.log(error);
       });
     },
 
     save(formName) {
+      //保存
       this.$refs[formName].validate((valid) => {
+        //必填项是否都填了
         if (valid) {
+          // 一系列传参
           let postData = {
             deviceSort: this.form.deviceSort,
             deviceBrand: this.form.deviceBrand,
@@ -357,14 +369,13 @@ export default {
               alert('保存成功！');
             }
             if (response.data.code === 9) {
-              alert('添加失败');
+              alert('保存失败');
             }
 
           }).catch(error => {
             console.log(error);
           });
-
-          // alert('保存成功！');
+          //跳转回设备页面
           this.$router.replace('/home/equipmentList');
         } else {
           console.log('error submit!!');
@@ -373,6 +384,7 @@ export default {
       });
     },
     back() {
+      //返回
       this.$router.replace('/home/equipmentList')
     }
   }

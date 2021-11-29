@@ -9,7 +9,7 @@
     <el-submenu index="5">
       <template slot="title">
         <i class="el-icon-menu"></i>
-        <span>其他</span>
+        <span>列表展示</span>
       </template>
       <el-menu-item-group>
         <el-menu-item index="/home/carousel"><i class="el-icon-data-analysis"></i>走马灯展示</el-menu-item>

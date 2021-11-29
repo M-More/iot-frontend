@@ -2,9 +2,12 @@
   <el-card class="box-card">
   <div class="boxPage">
       <el-breadcrumb separator="/" class="boxHeader">
+        <!--面包屑：显示当前页面的路径，快速返回首页。-->
         <el-breadcrumb-item>事件配置新增</el-breadcrumb-item>
         <el-breadcrumb-item>事件配置列表</el-breadcrumb-item>
       </el-breadcrumb>
+
+    <!--输入内容-->
     <div class="boxContext">
       <div class="boxRight">
         <div class="xiangqing">
@@ -18,7 +21,6 @@
               <el-input v-model="form.notificationDescription" placeholder="1-25个字符"></el-input>
             </el-form-item>
             <el-form-item label="事件级别" prop="eventLevel">
-<!--              <el-input v-model="form.eventLevel" placeholder="1-25个字符"></el-input>-->
               <el-select v-model="form.eventLevel"
                          placeholder="选择事件级别">
                 <el-option
@@ -30,7 +32,6 @@
               </el-select>
             </el-form-item>
             <el-form-item label="设备类型" prop="deviceTypeName">
-<!--              <el-input v-model="form.deviceTypeName" placeholder="1-25个字符"></el-input>-->
               <el-select v-model="form.deviceTypeName"
                          placeholder="选择设备类型"
                          @change="selectDevName"
@@ -44,7 +45,6 @@
               </el-select>
             </el-form-item>
             <el-form-item label="规则" prop="alarmName">
-<!--              <el-input v-model="form.alarmName"></el-input>-->
               <el-select v-model="form.alarmName"
                          multiple
                          collapse-tags
@@ -58,18 +58,12 @@
               </el-select>
             </el-form-item>
             <br>
-            <el-form-item label="备注" class="el-form-item-full">
-              <el-input
-                  type="textarea"
-                  :rows="4"
-                  placeholder="请输入内容"
-                  v-model="form.mainText"
-              ></el-input>
-            </el-form-item>
           </el-form>
         </div>
       </div>
     </div>
+
+    <!--底部按钮-->
     <div class="boxFooter">
       <el-button class="bottoms-style" size="mini" type="success" @click="save('form')">保存</el-button>
       <el-button class="bottoms-style" size="mini" @click="back">返回</el-button>
@@ -221,6 +215,7 @@
 export default {
   data(){
     return {
+      //事件级别下拉框
       options:[{
         value:'普通',
         label:"普通"
@@ -228,9 +223,12 @@ export default {
         value:'重要',
         label:"重要"
       }],
+      //设备下拉框
       optionsOfDev:[],
+      //规则下拉框
       optionsOfRul:[],
       postData:[],
+      //内容表单
       form: {
         eventName: '',
         notificationDescription: '',
@@ -238,6 +236,7 @@ export default {
         deviceTypeName: '',
         alarmName: ''
       },
+      //输入规则
       rules: {
         eventName: [
           { required: true, message: '请输入事件名称', trigger: 'blur' },
@@ -258,12 +257,13 @@ export default {
     }
   },
   mounted() {
+    //生命周期
     this.fetchDev()
     console.log(sessionStorage.getItem('userName'))
   },
   methods: {
+    //读取设备类型
     fetchDev(){
-      //读取设备类型
       this.axios({
         method: 'get',
         url: 'http://localhost:8080/deviceType/getAllName',
@@ -285,11 +285,11 @@ export default {
         console.log(error);
       });
     },
+    //读取规则
     selectDevName(){
       let postData={
         deviceTypeName:this.form.deviceTypeName
       };
-      //读取规则
       this.axios({
         method: 'get',
         url: 'http://localhost:8080/alarm/getBy',
@@ -313,6 +313,7 @@ export default {
         console.log(error);
       });
     },
+    //提交
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -352,6 +353,7 @@ export default {
         }
       });
     },
+    //返回
     back() {
       this.$router.replace('/home/eventConfList')
     }

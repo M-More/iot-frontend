@@ -184,11 +184,13 @@ export default {
     return {
       //设备类型
       postData:[],
+      //表单 给prop用
       form: {
         deviceTypeName: '',
         deviceTypeCode:'',
         deviceNote:'',
       },
+      //必选规则 小红星
       rules: {
         deviceTypeName: [
           { required: true, message: '请输入设备类型名称', trigger: 'blur' },
@@ -201,9 +203,12 @@ export default {
   },
 
   methods: {
+    // 保存
     save(formName) {
+      // 必选校验
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          //传参 所有选项
           let postData = {
             deviceTypeName: this.form.deviceTypeName,
             deviceTypeCode: "SBLX_" + this.form.deviceTypeCode,
@@ -217,15 +222,17 @@ export default {
             params: postData
           }).then(response => {
             console.log(response);
+            // 根据返回AppResponse的code对话框显示成功/失败
             if (response.data.code === 0) {
               alert('保存成功！');
             }
             if (response.data.code === 9) {
-              alert('添加失败');
+              alert('保存失败');
             }
           }).catch(error => {
             console.log(error);
           });
+          //返回
           this.$router.replace('/home/equipmentTypeList');
         } else {
           console.log('error submit!!');
@@ -234,6 +241,7 @@ export default {
       });
     },
     back() {
+      // 返回
       this.$router.replace('/home/equipmentTypeList')
     }
   }
