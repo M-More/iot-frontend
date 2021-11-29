@@ -15,7 +15,7 @@
             <el-row class="equipQuire-row-1">
               <!--查询字段-->
               <el-col style="font-weight: 700" :span="6">设备名称</el-col>
-              <el-col style="font-weight: 700;margin-left: 80px" :span="6" >设备类型</el-col>
+              <el-col style="font-weight: 700" :span="6" >设备类型</el-col>
               <el-col style="font-weight: 700" :span="6">设备品牌</el-col>
             </el-row>
             <el-row class="equipQuire-row-2">
@@ -67,7 +67,6 @@
           <el-button  type="success" @click="equipAdd" style="float:right; margin-right: 18px">新增</el-button>
         </p>
       </el-row>
-
       <div>
         <el-tabs style="background: white; line-height: 10px" v-model="activeName" type="card" @tab-click="handleClick">
             <template>
@@ -116,7 +115,7 @@
             </template>
         </el-tabs>
       </div>
-
+      <!--分页器-->
       <div class="block">
         <el-pagination
             @size-change="handleSizeChange"
@@ -129,7 +128,6 @@
         </el-pagination>
       </div>
 
-
     </div>
   </div>
 </template>
@@ -139,52 +137,60 @@ export default {
   name: "Equipment",
   data() {
     return {
+      // 列表的初始参数 默认值为'' 提供给prop
       deviceName:'',
       deviceTypeName:'',
       deviceBrand:'',
       deviceNumber:'',
       installAddress:'',
-
+      // 列表的初始参数 默认值为[] 提供给接收函数
       tableData: [],
       optionsOfDev:[],
       optionsOfBrand:[],
-      disablePage: false,
+      // 分页器的初始参数 提供给mounted()的this.fetchData()
       total: 20,
+      // 初始显示10条数据
       pageSize: 10,
+      // 初始显示第1页
       page: 1,
-
       //搜索框默认值
       inputTitle: '',
       inputTypeName: '',
       inputBrand: '',
+      //标签页限制表头高度
       activeName: 'first',
 
     }
   },
 
   mounted() {
+    //mounted()钩子函数初始渲染下拉框里的值
     this.fetchData(this.page,this.pageSize)
     this.selectBrandName()
     this.fetchDev()
   },
 
   methods: {
-    //读表
+    //读取数据表
     fetchData(page,pageSize){
+      //传入参数page pageSize (两个都是必填项且得有值）
       let postData={
         page: page,
         pageSize: pageSize
       };
+      //向接口发送get请求
       this.axios({
         method: 'get',
         url: 'http://localhost:8080/deviceInfo/getAll',
         params: postData
       }).then(response =>
       {
+        //传入的是AppResponse类 提取传入对应字段
         this.tableData = response.data.data
         this.total = response.data.total
       }).catch(error =>
       {
+        //打印错误信息（下同）
         console.log(error);
       });
     },
@@ -195,6 +201,7 @@ export default {
         method: 'get',
         url: 'http://localhost:8080/deviceType/getAllName',
       }).then(response => {
+        // 通过设置中间列表 遍历完成后统一传入下拉框设备类型optionsOfDev
         let optionsList = [];
         for (let i = 0; i < response.data.length; i++) {
           console.log(Object.values(response.data)[i]);
@@ -219,6 +226,7 @@ export default {
         url: 'http://localhost:8080/supplier/getAllName',
         params: postData
       }).then(response => {
+        // 通过设置中间列表 遍历完成后统一传入下拉框品牌类型optionsOfBrand
         let optionsList = [];
         for(let i=0;i<response.data.length;i++){
           let optionx={
@@ -228,24 +236,40 @@ export default {
           optionsList.push(optionx)
         }
         console.log(optionsList)
+        //去重
         let optionsList1 = Array.from(new Set(optionsList))
         console.log(optionsList1)
-        this.optionsOfBrand = optionsList;
+        this.optionsOfBrand = optionsList1;
       }).catch(error => {
         console.log(error);
       });
     },
 
     reflash(){
-      //刷新
+      //刷新当前页面
       this.$router.go(0);
     },
     equipQuery() {
+      // 条件查询
+      let pageNew;
+      // 只要上方输入框的值有任意改变的话 都从page=1开始查起
+      // total/pageSize时会出现分页器点击选项（不止一页） 大于1的传当前this.page值
+      if (this.inputTitle !== sessionStorage.getItem('inputTitle') ||
+          this.inputTypeName !== sessionStorage.getItem('inputTypeName') ||
+          this.inputBrand !== sessionStorage.getItem('inputBrand') ||
+          (sessionStorage.getItem('total')/this.pageSize) <=1
+          // eslint-disable-next-line no-empty
+      ){
+        pageNew = 1
+      }else {
+        pageNew = this.page
+      }
+      // 传入参数 page pageSize必填 其他可以为空 模糊查询
       let postData = {
         deviceName: this.inputTitle,
         deviceTypeName: this.inputTypeName,
         deviceBrand: this.inputBrand,
-        page: this.page,
+        page: pageNew,
         pageSize: this.pageSize,
       };
       console.log(postData)
@@ -256,6 +280,8 @@ export default {
       }).then(response => {
         this.tableData = response.data.data;
         this.total = response.data.total
+        //重点：得把total保存下来 给equipQuery()的pageNew比较使用
+        sessionStorage.setItem('total', response.data.total);
         console.log(response.data);
         console.log("查询成功");
       }).catch(error => {
@@ -264,7 +290,8 @@ export default {
     },
 
     equipUpdate(index, row){
-      //  修改，跳转到修改页面
+      // 修改，跳转到修改页面
+      // 一系列传入参数 详情见接口表
       sessionStorage.setItem('deviceNumber',row.deviceNumber);
       sessionStorage.setItem('deviceSort',row.deviceSort);
       sessionStorage.setItem('deviceBrand',row.deviceBrand);
@@ -275,7 +302,7 @@ export default {
       sessionStorage.setItem('deviceStatus',row.deviceStatus);
       sessionStorage.setItem('longitude',row.longitude);
       sessionStorage.setItem('latitude',row.latitude);
-
+      //跳转路径 注意有home
       this.$router.replace({path: '/home/equipmentList/equipmentUpdate'})
     },
     equipAdd(){
@@ -290,6 +317,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        //传入删除id（唯一）
         let postData = {
           deviceNumber: row.deviceNumber,
         };
@@ -314,11 +342,12 @@ export default {
     },
 
     resetForm() {
+      // 清空上方输入框内容
       this.inputTitle='';
       this.inputTypeName ='';
       this.inputBrand='';
     },
-
+    //列表边框样式
     headerStyle2({rowIndex}) {
       if (rowIndex === 0) {
         return 'border: 1px solid lightgray'
@@ -326,7 +355,7 @@ export default {
       else
         return ''
     },
-
+    //列表边框样式
     cellStyle2(){
       return 'border: 1px solid lightgray; padding: 0'
     },
@@ -341,16 +370,22 @@ export default {
       this.pageSize = val;
       this.equipQuery(this.page,this.pageSize)
       console.log(`每页 ${val} 条`);
-      //document.getElementById('testClick').click()
     },
     handleCurrentChange(val) {
       //换页
       this.page = val;
-      this.equipQuery(val,this.pageSize)
+      //通过上方输入框的值看是全部读取的换页还是模糊查询的换页
+      if(this.inputTitle === '' && this.inputBrand === '' && this.inputTypeName === ''){
+        this.fetchData(this.page,this.pageSize)
+      }else{
+        this.equipQuery(this.page,this.pageSize)
+      }
+      // 重点：每次分页器跳转得把输入框的值保存下来 给equipQuery()的pageNew比较使用
+      sessionStorage.setItem('inputTitle',this.inputTitle);
+      sessionStorage.setItem('inputBrand',this.inputBrand);
+      sessionStorage.setItem('inputTypeName',this.inputTypeName);
       console.log(`当前页: ${val}`);
-      //document.getElementById('testClick').click()
     },
-
   }
 
 }
@@ -414,7 +449,6 @@ export default {
   padding: 10px;
 }
 
-
 .detailList{
   height: 450px;
   padding-top: 5px;
@@ -435,7 +469,6 @@ export default {
   height: 40px;
   padding-top: 30px;
   padding-right: 10px;
-  /*padding-bottom: 10px;*/
   text-align: right;
 }
 

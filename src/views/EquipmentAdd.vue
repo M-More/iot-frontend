@@ -62,7 +62,7 @@
                 </el-input>
               </el-form-item>
               <el-form-item label="维度" prop="latitude">
-                <el-input v-model="form.latitude" placeholder="维度"
+                <el-input v-model="form.latitude" placeholder="纬度"
                           onkeyup="if(!/^(\-|\+)?([0-8]?\d{1}\.\d{0,6}|90\.0{0,6}|[0-8]?\d{1}|90)$/.test(this.value))
                           {alert('纬度范围：-90~90（只支持保留小数点后六位）');this.value='';}">
                 </el-input>
@@ -357,7 +357,7 @@ export default {
               alert('保存成功！');
             }
             if (response.data.code === 9) {
-              alert('添加失败');
+              alert('保存失败');
             }
 
           }).catch(error => {

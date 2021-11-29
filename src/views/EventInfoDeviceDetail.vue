@@ -5,7 +5,7 @@
       <el-col :span="24">
         <div>
           <el-form>
-
+            <!--设备详情3*2行-->
             <el-row class="eveConfQuire-row-1">
               <!--查询字段-->
               <el-col style="font-weight: bolder" :span="6">设备种类</el-col>
@@ -88,7 +88,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-
+            <!--返回按钮-->
             <el-row class="eveConfQuire-row-1" :gutter="10">
               <el-col style="font-weight: bolder;text-align: right" :span="11" >
                 <el-button type="button" @click="back">返回</el-button>
@@ -107,7 +107,9 @@ export default {
   name: "EventInfoDeviceDetail",
   data() {
     return {
+      //只读
       readonly: true,
+      //属性
       deviceSort:"",
       deviceBrand:"",
       deviceTypeName:"",
@@ -126,6 +128,7 @@ export default {
     this.fetchData()
   },
   methods:{
+    //数据库读取设备信息
     fetchData(){
       this.deviceNumber=sessionStorage.getItem('deviceNumber')
       let postData={
@@ -154,6 +157,7 @@ export default {
         console.log(error);
       });
     },
+    //返回
     back(){
       this.$router.replace('/home/eventInfo/eventInfoDetail')
     },

@@ -26,10 +26,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item>
-                  <el-input v-model="inputCode" placeholder="请输入设备类型编号"
-                    onKeyUp="value=value.replace(/[\D]/g,'')">
-                    <template slot="prepend">SBLX_</template>
-                  </el-input>
+                  <el-input v-model="inputCode" placeholder="请输入设备类型编号"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8" >
@@ -76,6 +73,7 @@
                 <el-table-column
                     prop="action"
                     label="操作"
+                    align="center"
                     show-overflow-tooltip>
                   <template slot-scope="scope">
                     <el-button class="equipTypeUpdateButt" type="text" @click="equipTypeUpdate(scope.$index, scope.row)">修改信息</el-button>
@@ -115,8 +113,8 @@ export default {
       deviceUpdateTime:"",
 
       tableData: [],
-      search: '',
-      disablePage: false,
+
+
       total: 0,
       pageSize: 10,
       page: 1,
@@ -126,8 +124,6 @@ export default {
       inputCode: '',
       activeName: 'first',
 
-      isSearch: true,
-      toBeSearched: [],
     }
   },
   mounted() {
@@ -156,33 +152,41 @@ export default {
         console.log(error);
       });
     },
+
     reflash(){
       this.$router.go(0);
     },
+
     equipTypeQuery() {
       //  查询
-      let postData;
-      console.log(postData)
-      if (this.inputCode !== '') {
-        postData = {
-          deviceTypeName: this.inputTitle,
-          deviceTypeCode: "SBLX_" + this.inputCode,
-        }
+      let pageNew;
+      // 只要上方输入框的值有任意改变的话 都从page=1开始查起
+      // total/pageSize时会出现分页器点击选项（不止一页） 大于1的传当前this.page值
+      if (this.inputTitle !== sessionStorage.getItem('inputTitle') ||
+          this.inputCode !== sessionStorage.getItem('inputCode') ||
+          (sessionStorage.getItem('total')/this.pageSize) <=1
+          // eslint-disable-next-line no-empty
+      ){
+        pageNew = 1
       }else {
-        postData = {
-          deviceTypeName: this.inputTitle,
-          deviceTypeCode: this.inputCode,
-        }
+        pageNew = this.page
       }
+
+     let postData = {
+       deviceTypeName: this.inputTitle,
+       deviceTypeCode: this.inputCode,
+       page: pageNew,
+       pageSize: this.pageSize,
+     }
         this.axios({
           method: 'get',
-          url: 'http://localhost:8080/deviceType/getBy',
+          url: 'http://localhost:8080/deviceType/getPageBy',
           params: postData
         }).then(response => {
-          console.log("返回")
-          console.log(response)
-          this.tableData = response.data
-          this.total = response.data.length
+          this.tableData = response.data.data;
+          this.total = response.data.total
+          //重点：得把total保存下来 给equipQuery()的pageNew比较使用
+          sessionStorage.setItem('total', response.data.total);
         }).catch(error => {
           console.log(error);
         });
@@ -263,8 +267,13 @@ export default {
     handleCurrentChange(val) {
       //换页
       this.page = val;
-      // this.equipTypeQuery(this.page,this.pageSize)
-      this.fetchData(val,this.pageSize)
+      if(this.inputTitle === '' && this.inputBrand === '' && this.inputLevel === ''){
+        this.fetchData(this.page,this.pageSize)
+      }else{
+        this.equipTypeQuery(this.page,this.pageSize)
+      }
+      sessionStorage.setItem('inputTitle',this.inputTitle);
+      sessionStorage.setItem('inputCode',this.inputCode);
       console.log(`当前页: ${val}`);
     },
   }

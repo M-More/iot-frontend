@@ -221,7 +221,7 @@ export default {
               alert('保存成功！');
             }
             if (response.data.code === 9) {
-              alert('添加失败');
+              alert('保存失败');
             }
           }).catch(error => {
             console.log(error);

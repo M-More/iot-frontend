@@ -14,7 +14,6 @@
       <el-form-item label="告警编码" prop="alarmCode">
         <el-input v-model="form.alarmCode"
                   placeholder="编码格式为：GJ_数字 "
-                  :disabled="true"
                   onKeyUp="value=value.replace(/[\D]/g,'')">
           <template slot="prepend">GJ_</template>
         </el-input>
@@ -153,7 +152,7 @@ export default {
       }).then(response=>
       {
         if (response.data.code === 0) {
-          alert('保存成功！');
+          alert('修改成功！');
         }
         if (response.data.code === 9) {
           alert('修改失败');

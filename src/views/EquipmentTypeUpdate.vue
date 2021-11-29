@@ -1,8 +1,8 @@
 <template>
   <div class="detailed-page">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>警告修改</el-breadcrumb-item>
-      <el-breadcrumb-item>警告列表</el-breadcrumb-item>
+      <el-breadcrumb-item>设备类型修改</el-breadcrumb-item>
+      <el-breadcrumb-item>设备类型列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!--    表单-->
     <el-form ref="form" :model="form" :rules="rules" label-position="top" inline=True class="forms">
@@ -67,7 +67,7 @@ export default {
       }).then(response=>
       {
         if (response.data.code === 0) {
-          alert('保存成功！');
+          alert('修改成功！');
         }
         if (response.data.code === 9) {
           alert('修改失败');
@@ -78,10 +78,10 @@ export default {
         console.log(error);
       });
       alert('保存成功！');
-      this.$router.replace('/home/equipmentList');
+      this.$router.replace('/home/equipmentTypeList');
     },
     back(){
-      this.$router.replace('/home/equipmentList')
+      this.$router.replace('/home/equipmentTypeList')
     }
   }
 }

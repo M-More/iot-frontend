@@ -153,7 +153,7 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="page"
-            :page-sizes="[1,2,3, 10, 20, 50]"
+            :page-sizes="[10, 20, 50]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total=this.total>
@@ -168,8 +168,10 @@ export default {
   name: "EventInfo",
   data() {
     return {
+      //事件级别下拉框
       options:[{value:'普通', label:"普通"},
         {value:'重要', label:"重要"}],
+      //属性
       eventInfoId:"",
       eventName:"",
       deviceNumber:"",
@@ -182,26 +184,22 @@ export default {
       eventLevel:'',
       deviceTypeName:"",
       deviceStatus:"",
-
+      //表格内容
       tableData: [],
-      search: '',
-      disablePage: false,
+      //分页
       total: 20,
       pageSize: 10,
       page: 1,
-
+      //查询字段
       inputId: '',
       inputName: '',
       activeName: 'first',
-
+      //事件数量属性*4
       eventSum:'',
       eventDone:'',
       eventDoing:'',
       eventToDo:'',
 
-
-      isSearch: true,
-      toBeSearched: [],
     }
   },
   mounted() {
@@ -266,8 +264,23 @@ export default {
         params: postData
       }).then(response =>
       {
-        this.tableData = response.data.data;
-        this.total=response.data.total
+        if(response.data.data.length==0){
+          // 如果当页查询不到数据，则page-1（数据库中不存在或查询数据不够页数）
+          this.page-=1
+          if(this.page==0){
+            //如果是在第一页查不到数据 => 数据库中不存在
+            //显示暂无数据
+            this.tableData = response.data.data;
+            this.total=response.data.total
+          }else{
+            //如果是在第2页之后查不到数据 => 查询数据不够页数
+            //递归查询前一页
+            this.eveConfQuery()
+          }
+        }else{
+          this.tableData = response.data.data;
+          this.total=response.data.total
+        }
         console.log(response.data);
         console.log("查询成功");
       }).catch(error =>
@@ -302,6 +315,7 @@ export default {
       this.inputName='';
     },
 
+    //样式函数
     headerStyle({rowIndex}) {
       if (rowIndex === 0) {
         return 'line-height:10px; background: white; '
@@ -327,8 +341,8 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
     },
+    //更改每页最大数量
     handleSizeChange(val) {
-      //更改每页最大数量
       this.page = 1;
       this.pageSize = val;
       this.eveConfQuery(this.page,this.pageSize)
@@ -336,7 +350,6 @@ export default {
     },
     //换页
     handleCurrentChange(val) {
-
       this.page = val;
       this.eveConfQuery(val,this.pageSize)
       console.log(`当前页: ${val}`);

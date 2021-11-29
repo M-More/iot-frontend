@@ -7,10 +7,16 @@
     <!-- 表单-->
     <el-form ref="form" :model="form" :rules="rules" label-position="top" inline=True class="forms">
       <el-form-item label="经度" prop="longitude">
-        <el-input v-model="form.longitude"></el-input>
+        <el-input v-model="form.longitude"
+                  placeholder="经度"
+                  onkeyup="if(!/^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,6})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,6}|180)$/.test(this.value))
+                          {alert('经度范围：-180~180（只支持保留小数点后六位）');this.value='';}"></el-input>
       </el-form-item>
       <el-form-item label="纬度" prop="latitude">
-        <el-input v-model="form.latitude"></el-input>
+        <el-input v-model="form.latitude"
+                  placeholder="纬度"
+                  onkeyup="if(!/^(\-|\+)?([0-8]?\d{1}\.\d{0,6}|90\.0{0,6}|[0-8]?\d{1}|90)$/.test(this.value))
+                          {alert('纬度范围：-90~90（只支持保留小数点后六位）');this.value='';}"></el-input>
       </el-form-item>
 
       <!-- 底部按钮-->
@@ -42,7 +48,6 @@ export default {
   methods:{
     save(){
       let postData={
-
         deviceNumber: sessionStorage.getItem('deviceNumber'),
         deviceSort: sessionStorage.getItem('deviceSort'),
         deviceBrand: sessionStorage.getItem('deviceBrand'),

@@ -16,7 +16,7 @@
               <!--查询字段-->
               <el-col style="font-weight: 700" :span="6">告警名称</el-col>
               <el-col style="font-weight: 700" :span="6">告警编码</el-col>
-              <el-col style="font-weight: 700;margin-left: 50px" :span="6">*告警级别</el-col>
+              <el-col style="font-weight: 700;" :span="6">*告警级别</el-col>
             </el-row>
             <el-row class="alertQuire-row-2">
               <!--查询内容输入-->
@@ -29,7 +29,7 @@
                 <el-form-item>
                   <el-input v-model="inputCode" placeholder="请输入告警编码"
                             onKeyUp="value=value.replace(/[\D]/g,'')">
-                    <template slot="prepend">GJ_</template>
+<!--                    <template slot="prepend">GJ_</template>-->
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -93,7 +93,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="deviceTypeName"
-                    label="默认设备"
+                    label="设备类型"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
@@ -150,6 +150,7 @@ export default {
         value:'重要',
         label:"重要"
       }],
+      // 列表的初始参数 默认值为'' 提供给prop
       // 表头字段信息
       alarmName:"",
       alarmCode:"",
@@ -161,10 +162,9 @@ export default {
       alarmStatus:"",
       createTime:"",
       updateTime:"",
-
+      // 列表的初始参数 默认值为[] 提供给接收函数
       tableData: [],
-      search: '',
-      disablePage: false,
+      // 分页器的初始参数 提供给mounted()的this.fetchData()
       total: 0,
       pageSize: 10,
       page: 1,  //当前页
@@ -173,18 +173,19 @@ export default {
       inputTitle: '',
       inputCode: '',
       inputLevel: '',
+      //标签页限制表头高度
       activeName: 'first',
 
-      isSearch: true,
-      toBeSearched: [],
     }
   },
   mounted() {
+    //mounted()钩子函数初始渲染下拉框里的值
     this.fetchData(this.page,this.pageSize)
   },
 
   methods: {
-    //读表
+    //读数据表
+    //传入参数page pageSize (两个都是必填项且得有值）
     fetchData(page,pageSize){
       let postData={
         page: page,
@@ -200,6 +201,7 @@ export default {
         let optionsList = [];
         for (let i = 0; i < response.data.data.length; i++) {
           let items={
+            //传入的是AppResponse类 提取传入对应字段
             alarmCode: response.data.data[i].alarmCode,
             alarmLevel:response.data.data[i].alarmLevel,
             alarmName:response.data.data[i].alarmName,
@@ -217,6 +219,7 @@ export default {
         this.total = response.data.total;
       }).catch(error =>
       {
+        //打印错误信息（下同）
         console.log(error);
       });
     },
@@ -227,12 +230,25 @@ export default {
     },
 
     alertQuery(){
-      //  查询
+      // 条件查询
+      let pageNew;
+      // 只要上方输入框的值有任意改变的话 都从page=1开始查起
+      // total/pageSize时会出现分页器点击选项（不止一页） 大于1的传当前this.page值
+      if (this.inputTitle !== sessionStorage.getItem('inputTitle') ||
+          this.inputCode !== sessionStorage.getItem('inputCode') ||
+          this.inputLevel !== sessionStorage.getItem('inputLevel') ||
+          (sessionStorage.getItem('total')/this.pageSize) <=1
+          // eslint-disable-next-line no-empty
+      ){
+        pageNew = 1
+      }else {
+        pageNew = this.page
+      }
       let postData = {
         alarmName:this.inputTitle,
         alarmCode: "GJ_"+ this.inputCode,
         alarmLevel: this.inputLevel,
-        page:this.page,
+        page: pageNew,
         pageSize:this.pageSize,
       };
       console.log(postData)
@@ -247,6 +263,8 @@ export default {
         }).then(response => {
           this.tableData = response.data.data;
           this.total = response.data.total
+          //重点：得把total保存下来 给alertQuery()的pageNew比较使用
+          sessionStorage.setItem('total', response.data.total);
           console.log(response.data);
           console.log("查询成功");
         }).catch(error => {
@@ -257,7 +275,7 @@ export default {
 
     alertUpdate(index, row){
       // 修改，跳转到修改页面
-
+      // 一系列传入参数 详情见接口表
       // 传入修改表格参数
       sessionStorage.setItem('alarmName',row.alarmName);
       sessionStorage.setItem('alarmCode',row.alarmCode);
@@ -282,6 +300,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        //传入删除id（唯一）
         let postData = {
           alarmCode: row.alarmCode,
         };
@@ -307,11 +326,12 @@ export default {
     },
 
     resetForm() {
+      // 清空上方输入框内容
       this.inputTitle='';
       this.inputCode='';
       this.inputLevel='';
     },
-
+    //列表边框样式
     headerStyle2({rowIndex}) {
       if (rowIndex === 0) {
         return 'border: 1px solid lightgray'
@@ -319,7 +339,7 @@ export default {
       else
         return ''
     },
-
+    //列表边框样式
     cellStyle2(){
       return 'border: 1px solid lightgray; padding: 0'
     },
@@ -338,9 +358,16 @@ export default {
     handleCurrentChange(val) {
       //换页
       this.page = val;
-      this.alertQuery(this.page,this.pageSize)
-      // this.fetchData(val,this.pageSize)
-
+      //通过上方输入框的值看是全部读取的换页还是模糊查询的换页
+      if(this.inputTitle === '' && this.inputBrand === '' && this.inputLevel === ''){
+        this.fetchData(this.page,this.pageSize)
+      }else{
+        this.alertQuery(this.page,this.pageSize)
+      }
+      // 重点：每次分页器跳转得把输入框的值保存下来 给alertQuery()的pageNew比较使用
+      sessionStorage.setItem('inputTitle',this.inputTitle);
+      sessionStorage.setItem('inputCode',this.inputCode);
+      sessionStorage.setItem('inputLevel',this.inputLevel);
       console.log(`当前页: ${val}`);
     },
 
@@ -360,23 +387,7 @@ export default {
   line-height: 53px;
 }
 /*右侧页面整体样式*/
-.alertList .el-dialog__title {
-  text-align: left;
-  font-size: 20px;
-}
-.alertList .el-dialog__header {
-  height: 10px;
-  padding: 20px 20px 30px;
-  border-bottom: solid 1px #F0EEEE;
-}
-.alertList .el-dialog__footer {
-  height: 50px;
-  border-top: solid 1px #F0EEEE;
-}
-.alertList .el-dialog__body {
-  height: 300px;
-  font-size: 14px;
-}
+
 .alertList .el-row{
   line-height: 100px !important;
 }
@@ -415,7 +426,6 @@ export default {
   border-radius: 20px;
   background: white;
   margin-top: 20px;
-  overflow: scroll;
 }
 .detailList p{
   padding-left: 8px;
