@@ -20,6 +20,8 @@ import EquipmentTypeList from "../views/EquipmentType.vue"
 import EquipmentTypeAdd from "../views/EquipmentTypeAdd.vue"
 import EquipmentTypeUpdate from "../views/EquipmentTypeUpdate.vue"
 import EquipmentList from "../views/Equipment.vue"
+import EquipmentAdd from "../views/EquipmentAdd.vue";
+import EquipmentUpdate from "../views/EquipmentUpdate.vue";
 import AlertList from "../views/Alert.vue"
 import AlertAdd from "../views/AlertAdd.vue"
 import AlertUpdate from "../views/AlertUpdate.vue"
@@ -146,6 +148,16 @@ const routes = [
         path:'equipmentList',
         name:'EquipmentList',
         component: EquipmentList
+      },
+      {
+        path:'equipmentList/equipmentAdd',
+        name:'EquipmentAdd',
+        component: EquipmentAdd
+      },
+      {
+        path:'equipmentList/equipmentUpdate',
+        name:'EquipmentUpdate',
+        component: EquipmentUpdate
       },
       {
         path:'alertList',

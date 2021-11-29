@@ -17,7 +17,7 @@
               <el-col style="font-weight: 700" :span="8">供应商名称</el-col>
               <el-col style="font-weight: 700" :span="8">供应商编码</el-col>
             </el-row>
-            <el-row class="supQuire-row-2">
+            <el-row class="supQuire-row-2" :gutter="20">
               <!--查询内容输入-->
               <el-col :span="8">
                 <el-form-item>
@@ -45,22 +45,12 @@
     <!--下方列表信息部分-->
     <div class="detailList">
       <el-row>
-        <el-col :span="8">
-          <p>列表</p>
-        </el-col>
-        <el-col :span="8" >
-          <el-button class="el-button1" type="success" @click="supAdd">新增</el-button>
-        </el-col>
-        <el-col :span="8" >
-          <el-button class="el-button1" type="success" @click="reflash">刷新</el-button>
-        </el-col>
+          <p>供应商信息
+            <el-button class="el-button1" style="float: right;margin-right: 20px;margin-top: 5px" type="success" @click="supAdd">新增</el-button>
+          </p>
       </el-row>
     <!--供应商信息显示栏-->
       <div>
-        <el-row>
-          <p>供应商信息</p>
-        </el-row>
-
         <el-tabs style="background: white; line-height: 10px;padding-bottom:0px" v-model="activeName" type="card" @tab-click="handleClick">
             <template>
               <el-table
@@ -73,38 +63,33 @@
                 <el-table-column
                     prop="supplierName"
                     label="供应商名称"
-                    width="100px"
                 >
                 </el-table-column>
                 <el-table-column
                     prop="supplierCode"
                     label="供应商编码"
-                    width="100px"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
                     prop="contactName"
                     label="联系人"
-                    width="150px"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
                     prop="contactTel"
                     label="电话"
-                    width="150px"
                     show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
                     prop="address"
                     label="地址"
-                    width="150px"
                     show-overflow-tooltip>
                 </el-table-column>
 
                 <el-table-column
                     prop="action"
                     label="操作"
-                    width="150px"
+                    align="center"
                     show-overflow-tooltip>
                   <template slot-scope="scope">
                     <el-button class="supUpdateButt" type="text" @click="supUpdate(scope.$index,scope.row)">修改信息</el-button>
@@ -121,7 +106,7 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page="page"
-              :page-sizes="[1,2,3, 10, 20, 50]"
+              :page-sizes="[10, 20, 50]"
               :page-size="pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total=this.total>

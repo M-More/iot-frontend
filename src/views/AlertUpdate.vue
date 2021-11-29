@@ -134,36 +134,42 @@ export default {
         console.log(error);
       });
     },
-    save(){
-      let postData={
-        alarmName: this.form.alarmName,
-        alarmCode: "GJ_" + this.form.alarmCode,
-        alarmLevel: this.form.alarmLevel,
-        deviceTypeName: this.form.deviceTypeName,
-        alarmStatus: this.form.alarmStatus,
-        ruleDescription: this.form.ruleDescription,
-        updateUser:sessionStorage.getItem('userName'),
-      };
-      console.log(postData);
-      this.axios({
-        method: 'post',
-        url:'http://localhost:8080/alarm/update',
-        params:postData
-      }).then(response=>
-      {
-        if (response.data.code === 0) {
-          alert('修改成功！');
+    save(formName){
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let postData={
+            alarmName: this.form.alarmName,
+            alarmCode: "GJ_" + this.form.alarmCode,
+            alarmLevel: this.form.alarmLevel,
+            deviceTypeName: this.form.deviceTypeName,
+            alarmStatus: this.form.alarmStatus,
+            ruleDescription: this.form.ruleDescription,
+            updateUser:sessionStorage.getItem('userName'),
+          };
+          console.log(postData);
+          this.axios({
+            method: 'post',
+            url:'http://localhost:8080/alarm/update',
+            params:postData
+          }).then(response=>
+          {
+            if (response.data.code === 0) {
+              alert('修改成功！');
+            }
+            if (response.data.code === 9) {
+              alert('修改失败');
+            }
+            console.log(response);
+          }).catch(error =>
+          {
+            console.log(error);
+          });
+          this.$router.replace('/home/alertList');
+        } else {
+          console.log('error submit!!');
+          return false;
         }
-        if (response.data.code === 9) {
-          alert('修改失败');
-        }
-        console.log(response);
-      }).catch(error =>
-      {
-        console.log(error);
       });
-
-      this.$router.replace('/home/alertList');
     },
     back(){
       this.$router.replace('/home/alertList')

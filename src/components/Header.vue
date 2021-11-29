@@ -69,7 +69,6 @@
     },
     methods:{
       changeHtml(){
-        this.$router.replace('http://localhost:8082')
         window.open('http://localhost:8082')
       },
       setUserNameText(){

@@ -20,7 +20,7 @@
             <el-row class="eveConfQuire-row-2">
               <!--查询内容输入-->
               <el-col :span="8">
-                <el-form-item style="margin-right: 20px">
+                <el-form-item>
                   <el-input v-model="inputTitle" placeholder="请输入事件名称"></el-input>
                 </el-form-item>
               </el-col>

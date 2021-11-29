@@ -39,48 +39,67 @@
 export default {
   data(){
     return {
-
+      //发送请求初始值
       postData:[],
+      //下拉框请求初始值
       optionsOfDev:[],
       optionsOfRul:[],
+      //表单 给prop用
       form: {
         deviceTypeName: sessionStorage.getItem('deviceTypeName'),
         deviceTypeCode: sessionStorage.getItem('deviceTypeCode').slice(5),
         deviceNote: sessionStorage.getItem('deviceNote'),
       },
-
+      //必选规则 小红星
+      rules: {
+        deviceTypeName: [
+          { required: true, message: '请输入设备类型名称', trigger: 'blur' },
+        ],
+        deviceTypeCode: [
+          { required: true, message: '请输入设备类型编号', trigger: 'blur' }
+        ],
+      }
     }
   },
   methods:{
-    save(){
-      let postData={
-        deviceTypeName: this.form.deviceTypeName,
-        deviceTypeCode: "SBLX_" + this.form.deviceTypeCode,
-        deviceNote: this.form.deviceNote,
-        updateUser:sessionStorage.getItem('userName'),
-      };
-      console.log(postData);
-      this.axios({
-        method: 'post',
-        url:'http://localhost:8080/deviceType/update',
-        params:postData
-      }).then(response=>
-      {
-        if (response.data.code === 0) {
-          alert('修改成功！');
+    // 保存
+    save(formName) {
+      // 必选校验
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          //传参 所有选项
+          let postData = {
+            deviceTypeName: this.form.deviceTypeName,
+            deviceTypeCode: "SBLX_" + this.form.deviceTypeCode,
+            deviceNote: this.form.deviceNote,
+            updateUser: sessionStorage.getItem('userName'),
+          };
+          console.log(postData);
+          this.axios({
+            method: 'post',
+            url: 'http://localhost:8080/deviceType/update',
+            params: postData
+          }).then(response => {
+            // 根据返回AppResponse的code对话框显示成功/失败
+            if (response.data.code === 0) {
+              alert('修改成功！');
+            }
+            if (response.data.code === 9) {
+              alert('修改失败');
+            }
+            console.log(response);
+          }).catch(error => {
+            console.log(error);
+          });
+          this.$router.replace('/home/equipmentTypeList');
+        }else {
+          console.log('error submit!!');
+          return false;
         }
-        if (response.data.code === 9) {
-          alert('修改失败');
-        }
-        console.log(response);
-      }).catch(error =>
-      {
-        console.log(error);
       });
-      alert('保存成功！');
-      this.$router.replace('/home/equipmentTypeList');
-    },
+   },
     back(){
+      //返回
       this.$router.replace('/home/equipmentTypeList')
     }
   }

@@ -34,54 +34,75 @@
 export default {
   data(){
     return {
-
-      postData:[],
-      optionsOfDev:[],
-      optionsOfRul:[],
+      //返回值初始为空
+      postData: [],
+      //下拉框初始为空 后续渲染
+      optionsOfDev: [],
+      optionsOfRul: [],
+      //表单
       form: {
         longitude: sessionStorage.getItem('longitude'),
         latitude: sessionStorage.getItem('latitude')
       },
-
+      //必填规则
+      rules: {
+        longitude: [
+          {required: true, message: '请输入经度', trigger: 'blur'}
+        ],
+        latitude: [
+          {required: true, message: '请输入纬度', trigger: 'blur'}
+        ],
+      }
     }
   },
   methods:{
-    save(){
-      let postData={
-        deviceNumber: sessionStorage.getItem('deviceNumber'),
-        deviceSort: sessionStorage.getItem('deviceSort'),
-        deviceBrand: sessionStorage.getItem('deviceBrand'),
-        deviceTypeName: sessionStorage.getItem('deviceTypeName'),
-        deviceModel: sessionStorage.getItem('deviceModel'),
-        installDate: sessionStorage.getItem('installDate'),
-        longitude: this.form.longitude,
-        latitude: this.form.latitude,
-        installAddress: sessionStorage.getItem('installAddress'),
-        deviceStatus: sessionStorage.getItem('deviceStatus'),
-        updateUser:sessionStorage.getItem('userName'),
-        deviceName:sessionStorage.getItem('deviceTypeName') +sessionStorage.getItem('deviceNumber')
-      };
-      console.log(postData);
-      this.axios({
-        method: 'post',
-        url:'http://localhost:8080/deviceInfo/update',
-        params:postData
-      }).then(response=>
-      {
-        if (response.data.code === 0) {
-          alert('保存成功！');
+    save(formName) {
+      //保存
+      this.$refs[formName].validate((valid) => {
+        //必填项校验是否为空
+        if (valid) {
+          //传参
+          let postData = {
+            deviceNumber: sessionStorage.getItem('deviceNumber'),
+            deviceSort: sessionStorage.getItem('deviceSort'),
+            deviceBrand: sessionStorage.getItem('deviceBrand'),
+            deviceTypeName: sessionStorage.getItem('deviceTypeName'),
+            deviceModel: sessionStorage.getItem('deviceModel'),
+            installDate: sessionStorage.getItem('installDate'),
+            longitude: this.form.longitude,
+            latitude: this.form.latitude,
+            installAddress: sessionStorage.getItem('installAddress'),
+            deviceStatus: sessionStorage.getItem('deviceStatus'),
+            updateUser: sessionStorage.getItem('userName'),
+            deviceName: sessionStorage.getItem('deviceTypeName') + sessionStorage.getItem('deviceNumber')
+          };
+          console.log(postData);
+          this.axios({
+            method: 'post',
+            url: 'http://localhost:8080/deviceInfo/update',
+            params: postData
+          }).then(response => {
+            //根据返回AppResponse的code 对话框提示成功/失败
+            if (response.data.code === 0) {
+              alert('保存成功！');
+            }
+            if (response.data.code === 9) {
+              alert('修改失败');
+            }
+            console.log(response);
+          }).catch(error => {
+            console.log(error);
+          });
+          //返回
+          this.$router.replace('/home/equipmentList');
+        }else {
+          console.log('error submit!!');
+          return false;
         }
-        if (response.data.code === 9) {
-          alert('修改失败');
-        }
-        console.log(response);
-      }).catch(error =>
-      {
-        console.log(error);
       });
-      this.$router.replace('/home/equipmentList');
     },
     back(){
+      //返回
       this.$router.replace('/home/equipmentList')
     }
   }

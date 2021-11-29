@@ -15,7 +15,7 @@
             <el-row class="equipQuire-row-1">
               <!--查询字段-->
               <el-col style="font-weight: 700" :span="6">设备名称</el-col>
-              <el-col style="font-weight: 700" :span="6" >设备类型</el-col>
+              <el-col style="font-weight: 700 ;margin-left:80px" :span="6" >设备类型</el-col>
               <el-col style="font-weight: 700" :span="6">设备品牌</el-col>
             </el-row>
             <el-row class="equipQuire-row-2">
@@ -164,8 +164,9 @@ export default {
   },
 
   mounted() {
-    //mounted()钩子函数初始渲染下拉框里的值
+    //表格数据
     this.fetchData(this.page,this.pageSize)
+    //mounted()钩子函数初始渲染下拉框里的值
     this.selectBrandName()
     this.fetchDev()
   },

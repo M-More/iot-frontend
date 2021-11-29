@@ -17,7 +17,7 @@
               <el-col style="font-weight: 700" :span="8">设备类型名称</el-col>
               <el-col style="font-weight: 700" :span="8">设备类型编号</el-col>
             </el-row>
-            <el-row class="equipTypeQuire-row-2">
+            <el-row class="equipTypeQuire-row-2" :gutter="20">
               <!--查询内容输入-->
               <el-col :span="8">
                 <el-form-item>
@@ -106,33 +106,37 @@ export default {
   name: "EquipmentType",
   data() {
     return {
+      // 列表的初始参数 默认值为'' 提供给prop
       deviceTypeName:"",
       deviceTypeCode:"",
       deviceNote:"",
       deviceCreateTime:"",
       deviceUpdateTime:"",
-
+      // 列表的初始参数 默认值为[] 提供给接收函数
       tableData: [],
-
-
+      // 分页器的初始参数 提供给mounted()的this.fetchData()
       total: 0,
+      // 初始显示10条数据
       pageSize: 10,
+      // 初始显示第1页数据
       page: 1,
 
-
+      //搜索框默认值
       inputTitle: '',
       inputCode: '',
+      //标签页限制表头高度
       activeName: 'first',
 
     }
   },
   mounted() {
+    //初始加载数据
     this.fetchData(this.page,this.pageSize)
   },
-
   methods: {
-    //读表
+    //读数据表
     fetchData(page,pageSize){
+      // page pageSize必填项
       let postData={
         page: page,
         pageSize: pageSize
@@ -144,6 +148,7 @@ export default {
         params: postData
       }).then(response =>
       {
+        //传入表格
         console.log(response.data.data);
         this.tableData = response.data.data;
         this.total=response.data.total;
@@ -154,6 +159,7 @@ export default {
     },
 
     reflash(){
+      //刷新页面
       this.$router.go(0);
     },
 
@@ -171,7 +177,7 @@ export default {
       }else {
         pageNew = this.page
       }
-
+      //输入框里的值和 page，pageSize
      let postData = {
        deviceTypeName: this.inputTitle,
        deviceTypeCode: this.inputCode,
@@ -238,10 +244,11 @@ export default {
     },
 
     resetForm() {
+      // 重置输入框的值
       this.inputTitle='';
       this.inputCode='';
     },
-
+    //表格边框样式
     headerStyle2({rowIndex}) {
       if (rowIndex === 0) {
         return 'border: 1px solid lightgray'
@@ -249,7 +256,7 @@ export default {
       else
         return ''
     },
-
+    //表格边框样式
     cellStyle2(){
       return 'border: 1px solid lightgray; padding: 0'
     },
@@ -268,8 +275,10 @@ export default {
       //换页
       this.page = val;
       if(this.inputTitle === '' && this.inputBrand === '' && this.inputLevel === ''){
+        //全空默认全传
         this.fetchData(this.page,this.pageSize)
       }else{
+        //模糊查询
         this.equipTypeQuery(this.page,this.pageSize)
       }
       sessionStorage.setItem('inputTitle',this.inputTitle);
